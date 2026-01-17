@@ -107,13 +107,13 @@
         .label-target { font-size: 0.65rem; color: #888; font-weight: bold; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
 
         #info-box {
-            background-color: #0d2b2b; color: #ecf0f1; padding: 10px; width: 100%; border-radius: 8px; 
+            background-color: #0d2b2b; color: #ecf0f1; padding: 13px; width: 100%; border-radius: 8px; 
             text-align: center; font-size: 0.8rem; line-height: 1.3; box-shadow: var(--shadow); box-sizing: border-box;
             opacity: 0; transition: opacity 0.3s;
         }
         #info-box.visible { opacity: 1; }
 
-        .right-panel { display: flex; flex-direction: column; align-items: center; }
+        .right-panel { display: flex; flex-direction: column; align-items: center; padding-bottom: 13px; }
         #simCanvas { width: 340px; height: 340px; background: #BFEFFF; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); image-rendering: pixelated; }
         #msg { height: 20px; font-weight: 900; margin-top: 5px; color: var(--accent-color); text-align: center; font-size: 1rem; text-shadow: 0 1px 0 white; }
 
@@ -162,7 +162,7 @@
             .label-target { font-size: 0.55rem; margin-top: 1px; }
             
             /* Info box compacta */
-            #info-box { width: 160px; font-size: 0.6rem; padding: 4px; line-height: 1,1; }
+            #info-box { width: 160px; height: 116px; font-size: 0.8rem; padding: 13px; line-height: 1,1; align-content: center;}
             
             /* Lienzo principal y mensaje */
             #simCanvas { width: 280px; height: 280px; }
@@ -322,49 +322,49 @@
     const SCHEMATIC_COLORS = { 0:[153,208,223], 1:[221,189,137], 2:[70,76,82], 3:[226,226,226], 4:[100,73,43], 8:[220,85,40], 9:[19,36,37] };
     const COLORS = { 0:[191,239,255], 9:[47,79,79], 1:[244,164,96], 2:[112,128,144], 3:[240,230,140], 4:[139,69,19], 8:[220,85,40] };
 
-    const LEVELS = [
-        { id:1, name:"Principios Básicos", seq:[1,2,3] },
-        { id:2, name:"Torre Sedimentaria", seq:[3,2,1,4,3,2] },
-        { id:3, name:"Cimientos", seq:[2,1,1,3,4] },
-        { id:4, name:"Emparedado", seq:[1,4,4,1] },
-        { id:5, name:"Primera Erosión", seq:[3,1,2,5] },
-        { id:6, name:"Discordancia", seq:[4,5,1,3] },
-        { id:7, name:"Valles y Cumbres", seq:[5,3,2,1,5,4] },
-        { id:8, name:"Desgaste Total", seq:[5,3,5,2,5,1,5,4,5] },
-        { id:9, name:"El Gran Cañón", seq:[3,2,5,5,5,1] },
-        { id:10, name:"Paleorrelieve", seq:[4,3,5,5,2,5,1,1] },
-        { id:11, name:"Fuerzas Compresivas", seq:[1,2,3,6] },
-        { id:12, name:"Base Ondulada", seq:[6,1,2,3] },
-        { id:13, name:"Sinclinal Oculto", seq:[1,3,6,4,2] },
-        { id:14, name:"Orogénesis", seq:[3,4,6,1,2,6] },
-        { id:15, name:"Anticlinal Erosionado", seq:[3,4,5,5,6] },
-        { id:16, name:"Tectónica Activa", seq:[1,3,5,5,6,4] },
-        { id:17, name:"Discordancia Angular", seq:[2,1,6,5,4] },
-        { id:18, name:"Caos Tectónico", seq:[3,2,6,5,5,1,6,4] },
-        { id:19, name:"Ruptura", seq:[1,2,3,7] },
-        { id:20, name:"Falla Activa", seq:[1,2,3,7,4] },
-        { id:21, name:"Trampa Petrolífera", seq:[1,3,4,6,7] },
-        { id:22, name:"Bloque Elevado", seq:[1,4,2,5,7] },
-        { id:23, name:"Graben", seq:[4,3,2,7,5] },
-        { id:24, name:"Historia Rota", seq:[1,5,5,2,3,7] },
-        { id:25, name:"Sistema de Fallas", seq:[4,2,3,7,1,7] },
-        { id:26, name:"El Dique", seq:[1,2,3,8] }, 
-        { id:27, name:"Volcán Dormido", seq:[4,3,2,8,5] }, 
-        { id:28, name:"Inyección Reciente", seq:[1,2,5,3,8] }, 
-        { id:29, name:"Pliegue Cortado", seq:[1,2,6,8] }, 
-        { id:30, name:"Dique Plegado", seq:[1,2,8,6] }, 
-        { id:31, name:"Dique Fallado", seq:[3,4,8,7] }, 
-        { id:32, name:"Cicatriz Ígnea", seq:[3,4,7,8] }, 
-        { id:33, name:"Discordancia Magmática", seq:[1,2,8,5,4] }, 
-        { id:34, name:"Intrusión Profunda", seq:[2,3,6,5,8,1] }, 
-        { id:35, name:"Tectónica Ígnea", seq:[1,2,8,6,7] }, 
-        { id:36, name:"Doble Evento", seq:[4,8,5,1,8] }, 
-        { id:37, name:"La Chimenea", seq:[2,6,5,3,7,8] }, 
-        { id:38, name:"Bloque Magmático", seq:[1,2,8,5,7,5,5] }, 
-        { id:39, name:"Historia Completa", seq:[3,2,6,5,4,8,7] }, 
-        { id:40, name:"El Gran Ciclo", seq:[1,2,3,6,5,7,8,5,4] },
-        { id:41, name:"Tectónica Cruzada", seq:[2,3,6,5,1,8,7] }, 
-        { id:42, name:"Caos Primordial", seq:[4,3,8,6,5,2,1,7] }
+const LEVELS = [
+        { id:1, name:"Principios Básicos", seq:[1,2,3], desc:"Ley de Superposición: Las capas más jóvenes siempre se depositan encima de las antiguas." },
+        { id:2, name:"Torre Sedimentaria", seq:[3,2,1,4,3,2], desc:"Un registro continuo de deposición sin interrupciones geológicas." },
+        { id:3, name:"Cimientos", seq:[2,1,1,3,4], desc:"Las capas inferiores soportan la presión de todo el peso superior." },
+        { id:4, name:"Emparedado", seq:[1,4,4,1], desc:"Cambios en el nivel del mar pueden alternar los tipos de sedimento depositado." },
+        { id:5, name:"Primera Erosión", seq:[3,1,2,5], desc:"La erosión borra parte de la historia geológica." },
+        { id:6, name:"Discordancia", seq:[4,5,1,3], desc:"Una discordancia representa un periodo de tiempo donde no hubo sedimentación." },
+        { id:7, name:"Valles y Cumbres", seq:[5,3,2,1,5,4], desc:"La erosión diferencial talla valles en rocas blandas y deja cumbres en rocas duras." },
+        { id:8, name:"Desgaste Total", seq:[5,3,5,2,5,1,5,4,5], desc:"La peneplanicie es una superficie casi plana formada por una erosión prolongada." },
+        { id:9, name:"El Gran Cañón", seq:[3,2,5,5,5,1], desc:"El río Colorado ha expuesto rocas de casi 2.000 millones de años de antigüedad." },
+        { id:10, name:"Paleorrelieve", seq:[4,3,5,5,2,5,1,1], desc:"Antiguas colinas enterradas bajo nuevos sedimentos crean un paleorrelieve." },
+        { id:11, name:"Fuerzas Compresivas", seq:[1,2,3,6], desc:"La tectónica de placas comprime la corteza creando ondulaciones." },
+        { id:12, name:"Base Ondulada", seq:[6,1,2,3], desc:"Sedimentar sobre una superficie plegada rellena primero los huecos (sinclinales)." },
+        { id:13, name:"Sinclinal Oculto", seq:[1,3,6,4,2], desc:"Un sinclinal es un pliegue en forma de 'U' donde las rocas más jóvenes quedan en el centro." },
+        { id:14, name:"Orogénesis", seq:[3,4,6,1,2,6], desc:"La orogénesis es el proceso de formación de montañas mediante deformación." },
+        { id:15, name:"Anticlinal Erosionado", seq:[3,4,5,5,6], desc:"En un anticlinal erosionado, las rocas más antiguas quedan expuestas en el centro." },
+        { id:16, name:"Tectónica Activa", seq:[1,3,5,5,6,4], desc:"La tierra nunca está quieta; plegamiento y deposición ocurren en ciclos." },
+        { id:17, name:"Discordancia Angular", seq:[2,1,6,5,4], desc:"Capas horizontales sobre capas plegadas: la firma de una gran convulsión geológica." },
+        { id:18, name:"Caos Tectónico", seq:[3,2,6,5,5,1,6,4], desc:"Múltiples eventos de deformación hacen difícil leer el pasado." },
+        { id:19, name:"Ruptura", seq:[1,2,3,7], desc:"Cuando la roca supera su límite elástico, se rompe formando una falla." },
+        { id:20, name:"Falla Activa", seq:[1,2,3,7,4], desc:"Una falla puede reactivarse millones de años después de formarse." },
+        { id:21, name:"Trampa Petrolífera", seq:[1,3,4,6,7], desc:"El petróleo a menudo queda atrapado en anticlinales cortados por fallas." },
+        { id:22, name:"Bloque Elevado", seq:[1,4,2,5,7], desc:"El movimiento vertical de fallas puede crear mesetas y cordilleras." },
+        { id:23, name:"Graben", seq:[4,3,2,7,5], desc:"Un bloque hundido entre dos fallas paralelas forma una fosa tectónica o Graben." },
+        { id:24, name:"Historia Rota", seq:[1,5,5,2,3,7], desc:"Las fallas pueden poner en contacto rocas de edades muy diferentes." },
+        { id:25, name:"Sistema de Fallas", seq:[4,2,3,7,1,7], desc:"Las fallas rara vez vienen solas; suelen formar sistemas complejos." },
+        { id:26, name:"El Dique", seq:[1,2,3,8], desc:"Un dique es una intrusión magmática vertical que corta capas preexistentes." }, 
+        { id:27, name:"Volcán Dormido", seq:[4,3,2,8,5], desc:"La erosión puede eliminar el cono volcánico, dejando solo el cuello de magma." }, 
+        { id:28, name:"Inyección Reciente", seq:[1,2,5,3,8], desc:"Principio de Corte: La intrusión es siempre más joven que la roca que corta." }, 
+        { id:29, name:"Pliegue Cortado", seq:[1,2,6,8], desc:"Si el dique no está plegado, la intrusión ocurrió después del plegamiento." }, 
+        { id:30, name:"Dique Plegado", seq:[1,2,8,6], desc:"Si el dique está doblado, la compresión tectónica continuó tras la intrusión." }, 
+        { id:31, name:"Dique Fallado", seq:[3,4,8,7], desc:"Una falla que corta un dique indica actividad tectónica muy reciente." }, 
+        { id:32, name:"Cicatriz Ígnea", seq:[3,4,7,8], desc:"El magma aprovecha las debilidades de las fallas para ascender." }, 
+        { id:33, name:"Discordancia Magmática", seq:[1,2,8,5,4], desc:"Roca sedimentaria depositada directamente sobre roca ígnea erosionada." }, 
+        { id:34, name:"Intrusión Profunda", seq:[2,3,6,5,8,1], desc:"Los plutones son grandes masas de magma que se enfrían lentamente bajo tierra." }, 
+        { id:35, name:"Tectónica Ígnea", seq:[1,2,8,6,7], desc:"El calor del magma puede alterar las propiedades mecánicas de la roca circundante." }, 
+        { id:36, name:"Doble Evento", seq:[4,8,5,1,8], desc:"Dos generaciones de magmatismo separadas por un evento erosivo." }, 
+        { id:37, name:"La Chimenea", seq:[2,6,5,3,7,8], desc:"Conducto principal por donde el magma intentó alcanzar la superficie." }, 
+        { id:38, name:"Bloque Magmático", seq:[1,2,8,5,7,5,5], desc:"La erosión diferencial deja el granito en resalte frente a la arenisca." }, 
+        { id:39, name:"Historia Completa", seq:[3,2,6,5,4,8,7], desc:"Sedimentación, orogénesis, erosión, magmatismo y ruptura final." }, 
+        { id:40, name:"El Gran Ciclo", seq:[1,2,3,6,5,7,8,5,4], desc:"El ciclo de las rocas: creación, destrucción y reciclaje constante." },
+        { id:41, name:"Tectónica Cruzada", seq:[2,3,6,5,1,8,7], desc:"Interacción compleja entre fuerzas compresivas y extensivas." }, 
+        { id:42, name:"Caos Primordial", seq:[4,3,8,6,5,2,1,7], desc:"Solo un geólogo experto puede desenredar esta secuencia de eventos." }
     ];
 
     let grid=[], targetGrid=[], history=[], userSeq=[], skyOff=0, undoCount=0;
@@ -472,13 +472,24 @@
         document.getElementById('btn-check').style.display = 'grid';
         const lvl = lvlIndex + 1;
         const box = document.getElementById('info-box');
+        
+        // LÓGICA DE MENSAJES:
+        // 1. Prioridad a los tutoriales de herramientas nuevas.
+        // 2. Si no es tutorial, muestra el dato curioso (desc) del array.
         let msg = "";
+        
         if(lvl === 1) msg = "Bienvenido.<br>Deposita capas de roca sedimentaria.";
         else if(lvl === 5) msg = "¡NUEVA HERRAMIENTA!<br><strong>Erosión:</strong> Desgasta la superficie.";
         else if(lvl === 11) msg = "¡NUEVA HERRAMIENTA!<br><strong>Pliegue:</strong> Dobla las capas por presión.";
         else if(lvl === 19) msg = "¡NUEVA HERRAMIENTA!<br><strong>Falla:</strong> Rompe y desplaza la tierra.";
         else if(lvl === 26) msg = "¡NUEVA HERRAMIENTA!<br><strong>Intrusión:</strong> Magma que corta la roca.";
+        else {
+            // Aquí cargamos el "Lore" del array LEVELS
+            msg = LEVELS[lvlIndex].desc || "Observa el objetivo y replica la secuencia.";
+        }
+
         if(msg) { box.innerHTML = msg; box.classList.add('visible'); } else { box.classList.remove('visible'); }
+        
         configureButton('btn-erosion', lvl >= 5); configureButton('btn-fold', lvl >= 11); configureButton('btn-fault', lvl >= 19); configureButton('btn-intrusion', lvl >= 26);
     }
 
