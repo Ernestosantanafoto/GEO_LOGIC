@@ -8,87 +8,55 @@
             --bg-color: #F0F4F8; 
             --accent-color: #1a3c3c; 
             --text-color: #333;
-            --shadow: 0 4px 8px rgba(0,0,0,0.25);
+            --shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
-        /* 1. BLOQUEO TOTAL (ESTILO APP) */
-        html, body {
-            width: 100%; 
-            height: 100%; 
-            margin: 0; 
-            padding: 0;
-            overflow: hidden;           /* Sin scroll */
-            position: fixed;            /* Clavado a la pantalla */
-            overscroll-behavior: none;  /* Sin rebote */
-            touch-action: none;         /* Sin gestos */
-        }
-
-        /* 2. EL FONDO */
         body { 
-            /* Color de respaldo (Blanco suave) por si la imagen falla */
             background-color: var(--bg-color); 
-            
-            /* --- ASEGÚRATE QUE EL NOMBRE COINCIDA EXACTAMENTE CON TU ARCHIVO --- */
-            background-image: url('img/fondo.jpg'); 
-            /* ------------------------------------------------------------------ */
-            
-            background-repeat: repeat; 
-            background-size: 300px; 
+            /* --- INICIO CONFIGURACIÓN DE FONDO --- */
+            background-image: url('img/fondo.jpg'); /* Asegúrate de que la imagen se llame así y esté en la carpeta img */
+            background-repeat: repeat;              /* 'repeat' para mosaico, 'no-repeat' para una sola vez */
+            background-size: 300px;                 /* Ajusta este número para que el patrón sea más grande o pequeño */
             background-position: center;
-            
+            background-attachment: fixed;           /* 'fixed' para que el fondo no se mueva al hacer scroll */
+            /* --- FIN CONFIGURACIÓN DE FONDO --- */
             color: var(--text-color); 
             font-family: 'Segoe UI', 'Roboto', sans-serif; 
-            
-            /* IMPORTANTE: block para que el fixed funcione bien */
-            display: block; 
-            
-            user-select: none; 
-            -webkit-tap-highlight-color: transparent;
+            margin: 0; height: 100vh; overflow: hidden; 
+            display: flex; flex-direction: column; align-items: center; 
+            user-select: none; -webkit-tap-highlight-color: transparent;
         }
         
-        /* 3. CAPA DE INTERFAZ (CRISTAL) */
-        .screen { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+       .screen { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
             
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            
-            /* Transparencia (0.4) y desenfoque para ver el fondo */
-            background: rgba(240, 244, 248, 0.4); 
-            backdrop-filter: blur(3px); 
-            
+            /* --- CAMBIO IMPORTANTE AQUÍ --- */
+            /* Antes ponía: var(--bg-color). Cámbialo a esto: */
+            background: rgba(240, 244, 248, 0.5); /* El 0.5 hace que sea semitransparente para ver el fondo */
+            backdrop-filter: blur(0px);           /* Opcional: difumina un poco tu foto para que el texto se lea mejor */
+            /* ----------------------------- */
+
             transition: opacity 0.3s; opacity: 0; pointer-events: none; z-index: 0; 
         }
         .screen.active { opacity: 1; pointer-events: all; z-index: 10; }
 
-        /* --- RESTO DE ELEMENTOS --- */
-        .main-logo { max-width: 85%; width: 450px; margin-bottom: 1.5rem; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.3)); }
-        
+        /* --- MENÚ PRINCIPAL --- */
+        .main-logo { max-width: 85%; width: 450px; margin-bottom: 1.5rem; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.15)); }
         .menu-btn { 
             width: 240px; padding: 15px; margin: 6px; 
             background: var(--accent-color); color: white; 
-            border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; 
+            border: none; border-radius: 30px; font-size: 1.1rem; font-weight: bold; 
             text-transform: uppercase; cursor: pointer; box-shadow: var(--shadow);
-            border: 2px solid rgba(255,255,255,0.3);
-            touch-action: manipulation;
         }
         .menu-btn:active { transform: translateY(2px); }
         .menu-btn.secondary { background: #555; font-size: 0.9rem; }
-        .menu-btn.creative { background: #d35400; font-size: 0.95rem; margin-bottom: 20px; }
+        .menu-btn.creative { background: #d35400; font-size: 0.95rem; margin-bottom:7px; }
 
-        /* NIVELES */
-        .levels-container { 
-            width: 90%; max-width: 600px; max-height: 70vh; 
-            overflow-y: auto; touch-action: pan-y; 
-            padding: 15px; 
-            /* Fondo blanco semitransparente para leer bien los niveles */
-            background: rgba(255, 255, 255, 0.8); 
-            border-radius: 15px; box-shadow: var(--shadow);
-        }
+        /* --- NIVELES --- */
+        .levels-container { width: 90%; max-width: 600px; max-height: 70vh; overflow-y: auto; padding: 10px; }
         .levels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; justify-items: center; }
-        .level-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; touch-action: manipulation; }
+        .level-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; }
         .level-card:active { transform: scale(0.95); }
         
         .level-box { 
@@ -99,30 +67,30 @@
         }
         .level-box canvas { width: 100%; height: 100%; image-rendering: pixelated; }
         .level-card.locked { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
-        .stars { font-size: 14px; margin-top: 5px; color: #FFD700; text-shadow: 0 1px 2px rgba(0,0,0,0.8); height: 20px; letter-spacing: 1px; font-weight: bold; }
+        .stars { font-size: 14px; margin-top: 5px; color: #FFD700; text-shadow: 0 1px 1px rgba(0,0,0,0.2); height: 20px; letter-spacing: 1px; }
 
-        /* JUEGO */
+        /* --- JUEGO (LAYOUT PRO) --- */
         #game-layout {
             display: flex; flex-direction: column; align-items: center; 
             width: 100%; height: 100%; padding-top: 10px;
             max-width: 600px; 
         }
 
+        /* CABECERA */
         .header-bar { 
             display: grid; grid-template-columns: 70px 1fr 70px; 
             width: 95%; margin-bottom: 10px; align-items: center; 
-            background: rgba(255,255,255,0.85); 
-            padding: 5px; border-radius: 30px; box-shadow: var(--shadow);
         }
         .back-btn-game { 
             background: #555; color: white; border: none; padding: 6px 10px; 
             border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.7rem; 
-            box-shadow: none; justify-self: start; touch-action: manipulation;
+            box-shadow: var(--shadow); justify-self: start;
         }
         .title-group { text-align: center; }
         #level-num { font-size: 0.75rem; color: #777; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        #level-title { margin: 0; font-size: 1.3rem; color: var(--accent-color); font-weight: 900; line-height: 1; text-shadow: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+        #level-title { margin: -4; font-size: 1.3rem; color: var(--accent-color); font-weight: 900; line-height: 3; text-shadow: 0 1px 0 rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+        /* ZONA CENTRAL */
         .main-stage {
             display: flex; flex-direction: row; justify-content: center; align-items: flex-start;
             gap: 20px; width: 98%; margin-bottom: 5px;
@@ -130,27 +98,26 @@
         .left-panel { display: flex; flex-direction: column; align-items: center; width: 160px; }
         
         .target-wrapper {
-            background: rgba(255,255,255,0.9); padding: 5px; border-radius: 10px; 
+            background: white; padding: 5px; border-radius: 10px; 
             box-shadow: var(--shadow); margin-bottom: 15px;
             display: flex; flex-direction: column; align-items: center;
-            flex-shrink: 0;
         }
         /* Escritorio: 130px */
-        #targetCanvas { width: 130px; height: 130px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; }
+        #targetCanvas { width: 100px; height: 100px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; }
         .label-target { font-size: 0.65rem; color: #888; font-weight: bold; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
 
         #info-box {
             background-color: #0d2b2b; color: #ecf0f1; padding: 10px; width: 100%; border-radius: 8px; 
             text-align: center; font-size: 0.8rem; line-height: 1.3; box-shadow: var(--shadow); box-sizing: border-box;
-            opacity: 0; transition: opacity 0.3s; border-left: 4px solid #F4A460;
+            opacity: 0; transition: opacity 0.3s;
         }
         #info-box.visible { opacity: 1; }
 
         .right-panel { display: flex; flex-direction: column; align-items: center; }
-        #simCanvas { width: 340px; height: 340px; background: #BFEFFF; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.25); image-rendering: pixelated; touch-action: none; }
-        #msg { height: 20px; font-weight: 900; margin-top: 5px; color: white; text-align: center; font-size: 1rem; text-shadow: 0 2px 4px black; }
+        #simCanvas { width: 340px; height: 340px; background: #BFEFFF; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); image-rendering: pixelated; }
+        #msg { height: 20px; font-weight: 900; margin-top: 5px; color: var(--accent-color); text-align: center; font-size: 1rem; text-shadow: 0 1px 0 white; }
 
-        /* CONTROLES */
+        /* CONTROLES (Escritorio) */
         .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 95%; max-width: 500px; }
         .tool-btn { 
             aspect-ratio: 1; border-radius: 10px; border: none; cursor: pointer;
@@ -158,21 +125,20 @@
             font-size: 0.6rem; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
             position: relative; overflow: hidden; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
             transition: transform 0.1s, box-shadow 0.1s; background-color: #888;
-            border: 2px solid white; touch-action: manipulation;
         }
         .tool-btn:active { transform: translateY(3px); box-shadow: none; }
         .btn-tex { position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.9; z-index: 0; background-size: cover; background-position: center; }
         .btn-label { position: relative; z-index: 2; margin-top: auto; padding-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.6rem; }
         .btn-icon-locked { font-size: 1.5rem; opacity: 0.4; z-index: 2; position: relative; }
         .btn-grey { background-color: #666; } 
-        .btn-sys { grid-column: span 2; height: 40px; aspect-ratio: auto; background-color: #444; font-size: 0.8rem; letter-spacing: 1px; border: 2px solid white; touch-action: manipulation;}
-        .btn-check { grid-column: span 4; height: 45px; aspect-ratio: auto; background-color: var(--accent-color); font-size: 1rem; margin-top: 2px; border: 2px solid white; touch-action: manipulation;}
+        .btn-sys { grid-column: span 2; height: 40px; aspect-ratio: auto; background-color: #444; font-size: 0.8rem; letter-spacing: 1px; }
+        .btn-check { grid-column: span 4; height: 45px; aspect-ratio: auto; background-color: var(--accent-color); font-size: 1rem; margin-top: 2px; }
 
         /* AYUDA */
         .help-wrapper { background: white; padding: 0; border-radius: 15px; max-width: 550px; width: 95%; height: 80vh; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; }
         .help-header { background: var(--accent-color); color: white; padding: 20px; text-align: center; flex-shrink: 0; }
         .help-header h2 { margin: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; }
-        .help-body { padding: 25px; overflow-y: auto; flex-grow: 1; touch-action: pan-y; }
+        .help-body { padding: 25px; overflow-y: auto; flex-grow: 1; }
         .help-section { margin-bottom: 25px; }
         .help-title { color: var(--accent-color); border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 10px; font-size: 1.1rem; }
         .help-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -185,49 +151,35 @@
 
         /* --- OPTIMIZACIÓN MÓVIL --- */
         @media (max-width: 600px) {
-            .header-bar { margin-bottom: 2px; padding: 3px; }
+            .header-bar { margin-bottom: 2px; }
             #level-title { font-size: 1rem; }
-            
             .main-stage { flex-direction: column; align-items: center; gap: 2px; margin-bottom: 2px; }
+            .left-panel { flex-direction: row; width: auto; justify-content: space-around; align-items: center; gap: 5px; margin-bottom: 12px; }
             
-            .left-panel { 
-                flex-direction: row; 
-                justify-content: space-between; 
-                align-items: center;
-                gap: 8px; 
-                margin-bottom: 2px;
-                width: 260px; 
-            }
-            
-            /* Objetivo MUY pequeño (70px) */
+            /* Objetivo MUY pequeño (100px) */
             .target-wrapper { margin-bottom: 0; padding: 2px; }
-            #targetCanvas { width: 75px; height: 75px; }
-            .label-target { font-size: 0.45rem; margin-top: 1px; }
+            #targetCanvas { width: 100px; height: 100px; }
+            .label-target { font-size: 0.55rem; margin-top: 1px; }
             
-            /* Info box compacta y elástica */
-            #info-box { 
-                width: auto; flex-grow: 1; height: 100%; 
-                font-size: 0.65rem; padding: 5px; line-height: 1.2; 
-                display: flex; align-items: center; justify-content: center;
-            }
+            /* Info box compacta */
+            #info-box { width: 160px; font-size: 0.6rem; padding: 4px; line-height: 1,1; }
             
-            /* Lienzo principal */
-            #simCanvas { width: 220px; height: 220px; } 
+            /* Lienzo principal y mensaje */
+            #simCanvas { width: 280px; height: 280px; }
             #msg { height: 15px; font-size: 0.8rem; margin-top: 2px; }
 
-            /* Controles */
+            /* Controles: Más pequeños y con espacio */
             .controls-grid { 
-                gap: 5px; width: 90%; max-width: 280px; 
+                gap: 6px; /* MÁS ESPACIO */
+                width: 90%; 
+                max-width: 280px; /* Ancho máximo reducido para forzar botones pequeños */
             }
-            .tool-btn { border-radius: 6px; box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+            .tool-btn { 
+                border-radius: 6px; 
+                box-shadow: 0 2px 0 rgba(0,0,0,0.2); 
+            }
             .tool-btn:active { transform: translateY(2px); }
-            .btn-label { font-size: 0.5rem; padding-bottom: 2px; letter-spacing: 0; }
-            .btn-icon-locked { font-size: 1.2rem; }
-            
-            .btn-sys { height: 30px; font-size: 0.65rem; }
-            .btn-check { height: 35px; font-size: 0.85rem; margin-top: 2px; }
-        }
-    </style>
+            .btn-label { font-size: 0.5rem; padding-bo…</style>
 </head>
 <body>
 
@@ -610,16 +562,3 @@
 </script>
 
 </body></html>
-
-
-
-
-
-
-
-
-
-
-
-
-
