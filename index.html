@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO-LOGIC: Super Compact (v83)</title>
+    <title>GEO-LOGIC: Spaced & Small (v84)</title>
     <style>
         /* --- ESTILOS GENERALES --- */
         :root { 
@@ -106,18 +106,18 @@
         #simCanvas { width: 340px; height: 340px; background: #BFEFFF; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); image-rendering: pixelated; }
         #msg { height: 20px; font-weight: 900; margin-top: 5px; color: var(--accent-color); text-align: center; font-size: 1rem; text-shadow: 0 1px 0 white; }
 
-        /* CONTROLES */
-        .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 95%; max-width: 500px; }
+        /* CONTROLES (Escritorio) */
+        .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 95%; max-width: 500px; }
         .tool-btn { 
-            aspect-ratio: 1; border-radius: 8px; border: none; cursor: pointer;
+            aspect-ratio: 1; border-radius: 10px; border: none; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             font-size: 0.6rem; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-            position: relative; overflow: hidden; box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+            position: relative; overflow: hidden; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
             transition: transform 0.1s, box-shadow 0.1s; background-color: #888;
         }
         .tool-btn:active { transform: translateY(3px); box-shadow: none; }
         .btn-tex { position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.9; z-index: 0; background-size: cover; background-position: center; }
-        .btn-label { position: relative; z-index: 2; margin-top: auto; padding-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.55rem; }
+        .btn-label { position: relative; z-index: 2; margin-top: auto; padding-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.6rem; }
         .btn-icon-locked { font-size: 1.5rem; opacity: 0.4; z-index: 2; position: relative; }
         .btn-grey { background-color: #666; } 
         .btn-sys { grid-column: span 2; height: 40px; aspect-ratio: auto; background-color: #444; font-size: 0.8rem; letter-spacing: 1px; }
@@ -138,9 +138,8 @@
         .help-rule { background: #eef5f5; border-left: 4px solid var(--accent-color); padding: 10px 15px; margin-bottom: 10px; font-size: 0.9rem; color: #444; }
         .help-footer { padding: 15px; background: #eee; text-align: center; flex-shrink: 0; }
 
-        /* --- OPTIMIZACIÓN MÓVIL EXTREMA --- */
+        /* --- OPTIMIZACIÓN MÓVIL --- */
         @media (max-width: 600px) {
-            /* Reducción drástica de márgenes verticales */
             .header-bar { margin-bottom: 2px; }
             #level-title { font-size: 1rem; }
             .main-stage { flex-direction: column; align-items: center; gap: 2px; margin-bottom: 2px; }
@@ -158,16 +157,23 @@
             #simCanvas { width: 270px; height: 270px; }
             #msg { height: 15px; font-size: 0.8rem; margin-top: 2px; }
 
-            /* Controles súper compactos */
-            .controls-grid { gap: 2px; width: 98%; max-width: 300px; }
-            .tool-btn { border-radius: 6px; box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+            /* Controles: Más pequeños y con espacio */
+            .controls-grid { 
+                gap: 6px; /* MÁS ESPACIO */
+                width: 90%; 
+                max-width: 280px; /* Ancho máximo reducido para forzar botones pequeños */
+            }
+            .tool-btn { 
+                border-radius: 6px; 
+                box-shadow: 0 2px 0 rgba(0,0,0,0.2); 
+            }
             .tool-btn:active { transform: translateY(2px); }
-            .btn-label { font-size: 0.5rem; padding-bottom: 2px; }
+            .btn-label { font-size: 0.5rem; padding-bottom: 2px; letter-spacing: 0; }
             .btn-icon-locked { font-size: 1.2rem; }
             
-            /* Botones de sistema más bajitos */
-            .btn-sys { height: 30px; font-size: 0.65rem; }
-            .btn-check { height: 35px; font-size: 0.85rem; margin-top: 0; }
+            /* Botones de sistema */
+            .btn-sys { height: 35px; font-size: 0.65rem; }
+            .btn-check { height: 40px; font-size: 0.85rem; margin-top: 2px; }
         }
     </style>
 </head>
@@ -282,10 +288,9 @@
     </div>
 
 <script>
-    try { if(!sessionStorage.getItem('v83_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v83_clean','true'); } } catch(e){}
+    try { if(!sessionStorage.getItem('v84_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v84_clean','true'); } } catch(e){}
 
     const W = 340, H = 340; 
-    /* Resolución interna para escritorio */
     const TW = 130, TH = 130; 
     const ctxP = document.getElementById('simCanvas').getContext('2d');
     const ctxT = document.getElementById('targetCanvas').getContext('2d');
