@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="es"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO-LOGIC: Spaced & Small (v84)</title>
-    <style>
+    <title>GEO-LOGIC: Spaced &amp; Small (v84)</title>
+<style>
         /* --- ESTILOS GENERALES --- */
         :root { 
             --bg-color: #F0F4F8; 
@@ -35,12 +33,12 @@
         .menu-btn { 
             width: 240px; padding: 15px; margin: 6px; 
             background: var(--accent-color); color: white; 
-            border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; 
+            border: none; border-radius: 30px; font-size: 1.1rem; font-weight: bold; 
             text-transform: uppercase; cursor: pointer; box-shadow: var(--shadow);
         }
         .menu-btn:active { transform: translateY(2px); }
         .menu-btn.secondary { background: #555; font-size: 0.9rem; }
-        .menu-btn.creative { background: #d35400; font-size: 0.95rem; margin-bottom: 20px; }
+        .menu-btn.creative { background: #d35400; font-size: 0.95rem; margin-bottom:7px; }
 
         /* --- NIVELES --- */
         .levels-container { width: 90%; max-width: 600px; max-height: 70vh; overflow-y: auto; padding: 10px; }
@@ -77,7 +75,7 @@
         }
         .title-group { text-align: center; }
         #level-num { font-size: 0.75rem; color: #777; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        #level-title { margin: 0; font-size: 1.3rem; color: var(--accent-color); font-weight: 900; line-height: 1; text-shadow: 0 1px 0 rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+        #level-title { margin: 0; font-size: 1.3rem; color: var(--accent-color); font-weight: 900; line-height: 3; text-shadow: 0 1px 0 rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* ZONA CENTRAL */
         .main-stage {
@@ -92,13 +90,13 @@
             display: flex; flex-direction: column; align-items: center;
         }
         /* Escritorio: 130px */
-        #targetCanvas { width: 130px; height: 130px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; }
+        #targetCanvas { width: 100px; height: 100px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; }
         .label-target { font-size: 0.65rem; color: #888; font-weight: bold; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
 
         #info-box {
             background-color: #0d2b2b; color: #ecf0f1; padding: 10px; width: 100%; border-radius: 8px; 
             text-align: center; font-size: 0.8rem; line-height: 1.3; box-shadow: var(--shadow); box-sizing: border-box;
-            opacity: 0; transition: opacity 0.3s; border-left: 4px solid #F4A460;
+            opacity: 0; transition: opacity 0.3s;
         }
         #info-box.visible { opacity: 1; }
 
@@ -143,18 +141,18 @@
             .header-bar { margin-bottom: 2px; }
             #level-title { font-size: 1rem; }
             .main-stage { flex-direction: column; align-items: center; gap: 2px; margin-bottom: 2px; }
-            .left-panel { flex-direction: row; width: 100%; justify-content: center; align-items: center; gap: 5px; margin-bottom: 2px; }
+            .left-panel { flex-direction: row; width: 52%; justify-content: space-around; align-items: center; gap: 5px; margin-bottom: 12px; }
             
-            /* Objetivo MUY pequeño (70px) */
+            /* Objetivo MUY pequeño (100px) */
             .target-wrapper { margin-bottom: 0; padding: 2px; }
-            #targetCanvas { width: 70px; height: 70px; }
-            .label-target { font-size: 0.45rem; margin-top: 1px; }
+            #targetCanvas { width: 100px; height: 100px; }
+            .label-target { font-size: 0.55rem; margin-top: 1px; }
             
             /* Info box compacta */
-            #info-box { width: 150px; font-size: 0.6rem; padding: 4px; line-height: 1.2; }
+            #info-box { width: 160px; font-size: 0.6rem; padding: 4px; line-height: 1,1; }
             
             /* Lienzo principal y mensaje */
-            #simCanvas { width: 270px; height: 270px; }
+            #simCanvas { width: 280px; height: 280px; }
             #msg { height: 15px; font-size: 0.8rem; margin-top: 2px; }
 
             /* Controles: Más pequeños y con espacio */
@@ -168,14 +166,7 @@
                 box-shadow: 0 2px 0 rgba(0,0,0,0.2); 
             }
             .tool-btn:active { transform: translateY(2px); }
-            .btn-label { font-size: 0.5rem; padding-bottom: 2px; letter-spacing: 0; }
-            .btn-icon-locked { font-size: 1.2rem; }
-            
-            /* Botones de sistema */
-            .btn-sys { height: 35px; font-size: 0.65rem; }
-            .btn-check { height: 40px; font-size: 0.85rem; margin-top: 2px; }
-        }
-    </style>
+            .btn-label { font-size: 0.5rem; padding-bo…</style>
 </head>
 <body>
 
@@ -185,7 +176,7 @@
         <button class="menu-btn secondary" onclick="showLevels()">NIVELES</button>
         <button class="menu-btn creative" onclick="enterPlayground()">PLAYGROUND</button>
         <button class="menu-btn secondary" onclick="showHelp()">AYUDA</button>
-        <div style="margin-top:10px; color:#aaa; font-size:0.7rem;" id="loading-text">Cargando...</div>
+        <div style="margin-top:10px; color:#aaa; font-size:0.7rem;" id="loading-text">por Ernesto Santana</div>
     </div>
 
     <div id="screen-levels" class="screen">
@@ -203,7 +194,7 @@
         <div id="game-layout">
             <div class="header-bar">
                 <button class="back-btn-game" onclick="showMenu()">« MENÚ</button>
-                <div class="title-group"><div id="level-num">NIVEL 1</div><h3 id="level-title">...</h3></div>
+                <div class="title-group"><div id="level-num"></div><h3 id="level-title">MODO CREATIVO</h3></div>
                 <div></div>
             </div>
 
@@ -213,7 +204,7 @@
                         <canvas id="targetCanvas" width="130" height="130"></canvas>
                         <div class="label-target">OBJETIVO</div>
                     </div>
-                    <div id="info-box"></div>
+                    <div id="info-box" class="visible">MODO LIBRE<br>Crea y experimenta sin límites.</div>
                 </div>
                 <div class="right-panel">
                     <canvas id="simCanvas" width="340" height="340"></canvas>
@@ -227,14 +218,14 @@
                 <button class="tool-btn" onclick="action(3)"><div class="btn-tex" style="background-image:url('img/caliza.jpg'); background-color:#F0E68C"></div><span class="btn-label">CALIZA</span></button>
                 <button class="tool-btn" onclick="action(4)"><div class="btn-tex" style="background-image:url('img/Conglomerado.jpg'); background-color:#8B4513"></div><span class="btn-label">CONGLOM.</span></button>
 
-                <button class="tool-btn btn-grey" id="btn-erosion" onclick="action(5)" data-label="EROSIÓN" data-img="EROSION.jpg"><div class="btn-tex" style="background-image:url('img/EROSION.jpg');"></div><span class="btn-label">EROSIÓN</span></button>
-                <button class="tool-btn btn-grey" id="btn-fold" onclick="action(6)" data-label="PLIEGUE" data-img="PLIEGUE.jpg"><div class="btn-tex" style="background-image:url('img/PLIEGUE.jpg');"></div><span class="btn-label">PLIEGUE</span></button>
-                <button class="tool-btn btn-grey" id="btn-fault" onclick="action(7)" data-label="FALLA" data-img="FALLA.jpg"><div class="btn-tex" style="background-image:url('img/FALLA.jpg');"></div><span class="btn-label">FALLA</span></button>
-                <button class="tool-btn btn-grey" id="btn-intrusion" onclick="action(8)" data-label="INTRUSION" data-img="INTRUSION.jpg"><div class="btn-tex" style="background-image:url('img/INTRUSION.jpg');"></div><span class="btn-label">INTRUSION</span></button>
+                <button class="tool-btn btn-grey" id="btn-erosion" onclick="action(5)" data-label="EROSIÓN" data-img="EROSION.jpg" style="pointer-events: all;"><div class="btn-tex" style="background-image:url('img/EROSION.jpg');"></div><span class="btn-label">EROSIÓN</span></button>
+                <button class="tool-btn btn-grey" id="btn-fold" onclick="action(6)" data-label="PLIEGUE" data-img="PLIEGUE.jpg" style="pointer-events: all;"><div class="btn-tex" style="background-image:url('img/PLIEGUE.jpg');"></div><span class="btn-label">PLIEGUE</span></button>
+                <button class="tool-btn btn-grey" id="btn-fault" onclick="action(7)" data-label="FALLA" data-img="FALLA.jpg" style="pointer-events: all;"><div class="btn-tex" style="background-image:url('img/FALLA.jpg');"></div><span class="btn-label">FALLA</span></button>
+                <button class="tool-btn btn-grey" id="btn-intrusion" onclick="action(8)" data-label="INTRUSION" data-img="INTRUSION.jpg" style="pointer-events: all;"><div class="btn-tex" style="background-image:url('img/INTRUSION.jpg');"></div><span class="btn-label">INTRUSION</span></button>
 
                 <button class="tool-btn btn-sys" onclick="undo()">DESHACER</button>
                 <button class="tool-btn btn-sys" onclick="resetLevel()">LIMPIAR</button>
-                <button class="tool-btn btn-check" id="btn-check" onclick="check()">COMPROBAR</button>
+                <button class="tool-btn btn-check" id="btn-check" onclick="check()" style="display: none;">COMPROBAR</button>
             </div>
         </div>
     </div>
@@ -556,5 +547,5 @@
     function loop() { skyOff+=0.25; if(document.getElementById('screen-game').classList.contains('active')) drawTextured(grid,ctxP,W,H); requestAnimationFrame(loop); }
     loop();
 </script>
-</body>
-</html>
+
+</body></html>
