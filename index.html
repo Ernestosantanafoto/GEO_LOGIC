@@ -13,6 +13,13 @@
 
         body { 
             background-color: var(--bg-color); 
+            /* --- INICIO CONFIGURACIÓN DE FONDO --- */
+            background-image: url('img/fondo.jpg'); /* Asegúrate de que la imagen se llame así y esté en la carpeta img */
+            background-repeat: repeat;              /* 'repeat' para mosaico, 'no-repeat' para una sola vez */
+            background-size: 256px;                 /* Ajusta este número para que el patrón sea más grande o pequeño */
+            background-position: center;
+            background-attachment: fixed;           /* 'fixed' para que el fondo no se mueva al hacer scroll */
+            /* --- FIN CONFIGURACIÓN DE FONDO --- */
             color: var(--text-color); 
             font-family: 'Segoe UI', 'Roboto', sans-serif; 
             margin: 0; height: 100vh; overflow: hidden; 
@@ -549,3 +556,4 @@
 </script>
 
 </body></html>
+
