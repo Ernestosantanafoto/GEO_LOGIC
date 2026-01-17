@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO-LOGIC: Caps Fix (v81)</title>
+    <title>GEO-LOGIC: Smaller Target (v82)</title>
     <style>
         /* --- ESTILOS GENERALES --- */
         :root { 
@@ -67,67 +67,64 @@
 
         /* CABECERA */
         .header-bar { 
-            display: grid; grid-template-columns: 80px 1fr 80px; 
-            width: 95%; margin-bottom: 15px; align-items: center; 
+            display: grid; grid-template-columns: 70px 1fr 70px; 
+            width: 95%; margin-bottom: 10px; align-items: center; 
         }
         .back-btn-game { 
-            background: #555; color: white; border: none; padding: 6px 15px; 
-            border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.75rem; 
+            background: #555; color: white; border: none; padding: 6px 10px; 
+            border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.7rem; 
             box-shadow: var(--shadow); justify-self: start;
         }
         .title-group { text-align: center; }
-        #level-num { font-size: 0.8rem; color: #777; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        #level-title { margin: 0; font-size: 1.5rem; color: var(--accent-color); font-weight: 900; line-height: 1; text-shadow: 0 1px 0 rgba(255,255,255,0.5); }
+        #level-num { font-size: 0.75rem; color: #777; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        #level-title { margin: 0; font-size: 1.3rem; color: var(--accent-color); font-weight: 900; line-height: 1; text-shadow: 0 1px 0 rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
 
         /* ZONA CENTRAL */
         .main-stage {
             display: flex; flex-direction: row; justify-content: center; align-items: flex-start;
-            gap: 20px; width: 98%; margin-bottom: 10px;
+            gap: 20px; width: 98%; margin-bottom: 5px;
         }
         .left-panel { display: flex; flex-direction: column; align-items: center; width: 160px; }
+        
         .target-wrapper {
             background: white; padding: 5px; border-radius: 10px; 
             box-shadow: var(--shadow); margin-bottom: 15px;
             display: flex; flex-direction: column; align-items: center;
         }
-        #targetCanvas { width: 150px; height: 150px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; }
+        /* CAMBIO AQUÍ: Reducido a 130px en escritorio */
+        #targetCanvas { width: 130px; height: 130px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; }
         .label-target { font-size: 0.65rem; color: #888; font-weight: bold; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
 
         #info-box {
-            background-color: #0d2b2b; color: #ecf0f1; padding: 12px; width: 100%; border-radius: 8px; 
-            text-align: center; font-size: 0.8rem; line-height: 1.4; box-shadow: var(--shadow); box-sizing: border-box;
+            background-color: #0d2b2b; color: #ecf0f1; padding: 10px; width: 100%; border-radius: 8px; 
+            text-align: center; font-size: 0.8rem; line-height: 1.3; box-shadow: var(--shadow); box-sizing: border-box;
             opacity: 0; transition: opacity 0.3s; border-left: 4px solid #F4A460;
         }
         #info-box.visible { opacity: 1; }
 
         .right-panel { display: flex; flex-direction: column; align-items: center; }
         #simCanvas { width: 340px; height: 340px; background: #BFEFFF; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); image-rendering: pixelated; }
-        #msg { height: 25px; font-weight: 900; margin-top: 10px; color: var(--accent-color); text-align: center; font-size: 1.1rem; text-shadow: 0 1px 0 white; }
+        #msg { height: 20px; font-weight: 900; margin-top: 5px; color: var(--accent-color); text-align: center; font-size: 1rem; text-shadow: 0 1px 0 white; }
 
         /* CONTROLES */
-        .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 95%; max-width: 500px; }
+        .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 95%; max-width: 500px; }
         .tool-btn { 
-            aspect-ratio: 1; border-radius: 10px; border: none; cursor: pointer;
+            aspect-ratio: 1; border-radius: 8px; border: none; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             font-size: 0.6rem; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-            position: relative; overflow: hidden; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            position: relative; overflow: hidden; box-shadow: 0 3px 0 rgba(0,0,0,0.2);
             transition: transform 0.1s, box-shadow 0.1s; background-color: #888;
         }
-        .tool-btn:active { transform: translateY(4px); box-shadow: none; }
+        .tool-btn:active { transform: translateY(3px); box-shadow: none; }
         .btn-tex { position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.9; z-index: 0; background-size: cover; background-position: center; }
-        .btn-label { position: relative; z-index: 2; margin-top: auto; padding-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .btn-icon-locked { font-size: 1.8rem; opacity: 0.4; z-index: 2; position: relative; }
+        .btn-label { position: relative; z-index: 2; margin-top: auto; padding-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.55rem; }
+        .btn-icon-locked { font-size: 1.5rem; opacity: 0.4; z-index: 2; position: relative; }
         .btn-grey { background-color: #666; } 
-        .btn-sys { grid-column: span 2; height: 45px; aspect-ratio: auto; background-color: #444; font-size: 0.85rem; letter-spacing: 1px; }
-        .btn-check { grid-column: span 4; height: 50px; aspect-ratio: auto; background-color: var(--accent-color); font-size: 1.1rem; margin-top: 5px; }
+        .btn-sys { grid-column: span 2; height: 40px; aspect-ratio: auto; background-color: #444; font-size: 0.8rem; letter-spacing: 1px; }
+        .btn-check { grid-column: span 4; height: 45px; aspect-ratio: auto; background-color: var(--accent-color); font-size: 1rem; margin-top: 2px; }
 
         /* AYUDA */
-        .help-wrapper {
-            background: white; padding: 0; border-radius: 15px; 
-            max-width: 550px; width: 95%; height: 80vh; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            display: flex; flex-direction: column; overflow: hidden;
-        }
+        .help-wrapper { background: white; padding: 0; border-radius: 15px; max-width: 550px; width: 95%; height: 80vh; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; }
         .help-header { background: var(--accent-color); color: white; padding: 20px; text-align: center; flex-shrink: 0; }
         .help-header h2 { margin: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; }
         .help-body { padding: 25px; overflow-y: auto; flex-grow: 1; }
@@ -141,12 +138,23 @@
         .help-rule { background: #eef5f5; border-left: 4px solid var(--accent-color); padding: 10px 15px; margin-bottom: 10px; font-size: 0.9rem; color: #444; }
         .help-footer { padding: 15px; background: #eee; text-align: center; flex-shrink: 0; }
 
-        @media (max-width: 550px) {
-            .main-stage { flex-direction: column; align-items: center; }
-            .left-panel { flex-direction: row; width: 100%; justify-content: center; gap: 15px; margin-bottom: 10px; }
-            .target-wrapper { margin-bottom: 0; }
-            #info-box { width: 180px; font-size: 0.7rem; }
-            #simCanvas { width: 300px; height: 300px; }
+        /* --- OPTIMIZACIÓN MÓVIL --- */
+        @media (max-width: 600px) {
+            .header-bar { margin-bottom: 5px; }
+            #level-title { font-size: 1.1rem; }
+            .main-stage { flex-direction: column; align-items: center; gap: 5px; }
+            .left-panel { flex-direction: row; width: 100%; justify-content: center; align-items: center; gap: 10px; margin-bottom: 5px; }
+            
+            /* En móvil sigue siendo pequeño (90px) */
+            .target-wrapper { margin-bottom: 0; padding: 3px; }
+            #targetCanvas { width: 90px; height: 90px; }
+            .label-target { font-size: 0.5rem; margin-top: 2px; }
+            
+            #info-box { width: 160px; font-size: 0.65rem; padding: 6px; }
+            #simCanvas { width: 270px; height: 270px; }
+            .controls-grid { gap: 4px; width: 98%; max-width: 320px; }
+            .btn-sys { height: 35px; font-size: 0.7rem; }
+            .btn-check { height: 40px; font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -183,7 +191,7 @@
             <div class="main-stage">
                 <div class="left-panel">
                     <div class="target-wrapper">
-                        <canvas id="targetCanvas" width="150" height="150"></canvas>
+                        <canvas id="targetCanvas" width="130" height="130"></canvas>
                         <div class="label-target">OBJETIVO</div>
                     </div>
                     <div id="info-box"></div>
@@ -261,20 +269,20 @@
     </div>
 
 <script>
-    try { if(!sessionStorage.getItem('v81_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v81_clean','true'); } } catch(e){}
+    try { if(!sessionStorage.getItem('v82_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v82_clean','true'); } } catch(e){}
 
     const W = 340, H = 340; 
-    const TW = 150, TH = 150; 
+    /* CAMBIO AQUÍ: Resolución interna ajustada a 130x130 */
+    const TW = 130, TH = 130; 
     const ctxP = document.getElementById('simCanvas').getContext('2d');
     const ctxT = document.getElementById('targetCanvas').getContext('2d');
     
-    // TEXTURAS: ACTUALIZADAS A CAPITALIZADAS DONDE PEDISTE
     const textureFiles = { 
-        0:'img/Cielo.jpg',         // PEDIDO: Cielo
+        0:'img/Cielo.jpg', 
         1:'img/arenisca.jpg', 
-        2:'img/Pizarra.jpg',       // PEDIDO: PIzarra (Puesta Pizarra)
+        2:'img/Pizarra.jpg', 
         3:'img/caliza.jpg',        
-        4:'img/Conglomerado.jpg',  // PEDIDO: Conglomerado
+        4:'img/Conglomerado.jpg',  
         8:'img/magma.jpg', 
         9:'img/basament.jpg' 
     };
@@ -481,7 +489,7 @@
         targetGrid=initGrid(TW,TH); LEVELS[i].seq.forEach(a=>action(a,targetGrid,TW,TH)); 
         drawSchematic(targetGrid,ctxT,TW,TH);
         resetLevel();
-    }https://github.com/Ernestosantanafoto/GEO_LOGIC/blob/main/index.html
+    }
 
     function resetLevel() { grid=initGrid(W,H); history=[]; userSeq=[]; undoCount=0; if(isPlayground) drawSchematic(grid, ctxT, TW, TH);}
     
