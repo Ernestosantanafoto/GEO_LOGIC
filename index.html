@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO-LOGIC: Smaller Target (v82)</title>
+    <title>GEO-LOGIC: Super Compact (v83)</title>
     <style>
         /* --- ESTILOS GENERALES --- */
         :root { 
@@ -91,7 +91,7 @@
             box-shadow: var(--shadow); margin-bottom: 15px;
             display: flex; flex-direction: column; align-items: center;
         }
-        /* CAMBIO AQUÍ: Reducido a 130px en escritorio */
+        /* Escritorio: 130px */
         #targetCanvas { width: 130px; height: 130px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; }
         .label-target { font-size: 0.65rem; color: #888; font-weight: bold; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
 
@@ -138,23 +138,36 @@
         .help-rule { background: #eef5f5; border-left: 4px solid var(--accent-color); padding: 10px 15px; margin-bottom: 10px; font-size: 0.9rem; color: #444; }
         .help-footer { padding: 15px; background: #eee; text-align: center; flex-shrink: 0; }
 
-        /* --- OPTIMIZACIÓN MÓVIL --- */
+        /* --- OPTIMIZACIÓN MÓVIL EXTREMA --- */
         @media (max-width: 600px) {
-            .header-bar { margin-bottom: 5px; }
-            #level-title { font-size: 1.1rem; }
-            .main-stage { flex-direction: column; align-items: center; gap: 5px; }
-            .left-panel { flex-direction: row; width: 100%; justify-content: center; align-items: center; gap: 10px; margin-bottom: 5px; }
+            /* Reducción drástica de márgenes verticales */
+            .header-bar { margin-bottom: 2px; }
+            #level-title { font-size: 1rem; }
+            .main-stage { flex-direction: column; align-items: center; gap: 2px; margin-bottom: 2px; }
+            .left-panel { flex-direction: row; width: 100%; justify-content: center; align-items: center; gap: 5px; margin-bottom: 2px; }
             
-            /* En móvil sigue siendo pequeño (90px) */
-            .target-wrapper { margin-bottom: 0; padding: 3px; }
-            #targetCanvas { width: 90px; height: 90px; }
-            .label-target { font-size: 0.5rem; margin-top: 2px; }
+            /* Objetivo MUY pequeño (70px) */
+            .target-wrapper { margin-bottom: 0; padding: 2px; }
+            #targetCanvas { width: 70px; height: 70px; }
+            .label-target { font-size: 0.45rem; margin-top: 1px; }
             
-            #info-box { width: 160px; font-size: 0.65rem; padding: 6px; }
+            /* Info box compacta */
+            #info-box { width: 150px; font-size: 0.6rem; padding: 4px; line-height: 1.2; }
+            
+            /* Lienzo principal y mensaje */
             #simCanvas { width: 270px; height: 270px; }
-            .controls-grid { gap: 4px; width: 98%; max-width: 320px; }
-            .btn-sys { height: 35px; font-size: 0.7rem; }
-            .btn-check { height: 40px; font-size: 0.9rem; }
+            #msg { height: 15px; font-size: 0.8rem; margin-top: 2px; }
+
+            /* Controles súper compactos */
+            .controls-grid { gap: 2px; width: 98%; max-width: 300px; }
+            .tool-btn { border-radius: 6px; box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+            .tool-btn:active { transform: translateY(2px); }
+            .btn-label { font-size: 0.5rem; padding-bottom: 2px; }
+            .btn-icon-locked { font-size: 1.2rem; }
+            
+            /* Botones de sistema más bajitos */
+            .btn-sys { height: 30px; font-size: 0.65rem; }
+            .btn-check { height: 35px; font-size: 0.85rem; margin-top: 0; }
         }
     </style>
 </head>
@@ -269,10 +282,10 @@
     </div>
 
 <script>
-    try { if(!sessionStorage.getItem('v82_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v82_clean','true'); } } catch(e){}
+    try { if(!sessionStorage.getItem('v83_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v83_clean','true'); } } catch(e){}
 
     const W = 340, H = 340; 
-    /* CAMBIO AQUÍ: Resolución interna ajustada a 130x130 */
+    /* Resolución interna para escritorio */
     const TW = 130, TH = 130; 
     const ctxP = document.getElementById('simCanvas').getContext('2d');
     const ctxT = document.getElementById('targetCanvas').getContext('2d');
