@@ -3,8 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GEO-LOGIC: Spaced &amp; Small (v84)</title>
 <style>
-        /* --- ESTILOS GENERALES --- */
-       /* --- ESTILOS GENERALES --- */
+      /* --- ESTILOS GENERALES --- */
         :root { 
             --bg-color: #F0F4F8; 
             --accent-color: #1a3c3c; 
@@ -18,9 +17,10 @@
             height: 100%; 
             margin: 0; 
             padding: 0;
-            overflow: hidden;           /* Elimina barras de scroll */
-            overscroll-behavior: none;  /* Elimina el rebote elástico en móviles */
-            position: fixed;            /* Clava la página a la pantalla para que no deslice */
+            overflow: hidden;           /* Sin barras de scroll */
+            overscroll-behavior: none;  /* Sin rebote elástico */
+            position: fixed;            /* Clava la página a la pantalla */
+            touch-action: none;         /* Evita zoom y desplazamiento del navegador */
         }
 
         body { 
@@ -34,26 +34,35 @@
             color: var(--text-color); 
             font-family: 'Segoe UI', 'Roboto', sans-serif; 
             
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            /* IMPORTANTE: Usamos block, no flex, para evitar conflictos de posición */
+            display: block; 
             
             user-select: none; 
             -webkit-tap-highlight-color: transparent;
-            
-            /* CRÍTICO: Esto evita que el navegador haga zoom o scroll por su cuenta */
-            touch-action: none; 
         }
         
         .screen { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 200%; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            /* FIXED: Para que cubra la pantalla exacta siempre */
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; /* ¡AQUÍ ESTABA TU ERROR! Antes tenías 200% */
             
-            /* --- CAMBIO IMPORTANTE AQUÍ --- */
-            /* Antes ponía: var(--bg-color). Cámbialo a esto: */
-            background: rgba(240, 244, 248, 0.1); /* El 0.5 hace que sea semitransparente para ver el fondo */
-            backdrop-filter: blur(1px);           /* Opcional: difumina un poco tu foto para que el texto se lea mejor */
-            /* ----------------------------- */
-
-            transition: opacity 0.3s; opacity: 0; pointer-events: none; z-index: 0; 
+            /* Centrado del contenido */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            
+            /* Fondo semitransparente para ver la imagen detrás */
+            background: rgba(240, 244, 248, 0.5); 
+            backdrop-filter: blur(2px);
+            
+            transition: opacity 0.3s; 
+            opacity: 0; 
+            pointer-events: none; 
+            z-index: 0; 
         }
         .screen.active { opacity: 1; pointer-events: all; z-index: 10; }
 
@@ -578,6 +587,7 @@
 </script>
 
 </body></html>
+
 
 
 
