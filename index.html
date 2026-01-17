@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO-LOGIC: Filename Fix (v80)</title>
+    <title>GEO-LOGIC: Caps Fix (v81)</title>
     <style>
         /* --- ESTILOS GENERALES --- */
         :root { 
@@ -196,9 +196,9 @@
 
             <div class="controls-grid">
                 <button class="tool-btn" onclick="action(1)"><div class="btn-tex" style="background-image:url('img/arenisca.jpg'); background-color:#F4A460"></div><span class="btn-label">ARENISCA</span></button>
-                <button class="tool-btn" onclick="action(2)"><div class="btn-tex" style="background-image:url('img/pizarra.jpg'); background-color:#708090"></div><span class="btn-label">PIZARRA</span></button>
+                <button class="tool-btn" onclick="action(2)"><div class="btn-tex" style="background-image:url('img/Pizarra.jpg'); background-color:#708090"></div><span class="btn-label">PIZARRA</span></button>
                 <button class="tool-btn" onclick="action(3)"><div class="btn-tex" style="background-image:url('img/caliza.jpg'); background-color:#F0E68C"></div><span class="btn-label">CALIZA</span></button>
-                <button class="tool-btn" onclick="action(4)"><div class="btn-tex" style="background-image:url('img/conglomerado.jpg'); background-color:#8B4513"></div><span class="btn-label">CONGLOM.</span></button>
+                <button class="tool-btn" onclick="action(4)"><div class="btn-tex" style="background-image:url('img/Conglomerado.jpg'); background-color:#8B4513"></div><span class="btn-label">CONGLOM.</span></button>
 
                 <button class="tool-btn btn-grey" id="btn-erosion" onclick="action(5)" data-label="EROSIÓN" data-img="EROSION.jpg"><div class="btn-tex" style="background-image:url('img/EROSION.jpg');"></div><span class="btn-label">EROSIÓN</span></button>
                 <button class="tool-btn btn-grey" id="btn-fold" onclick="action(6)" data-label="PLIEGUE" data-img="PLIEGUE.jpg"><div class="btn-tex" style="background-image:url('img/PLIEGUE.jpg');"></div><span class="btn-label">PLIEGUE</span></button>
@@ -261,20 +261,20 @@
     </div>
 
 <script>
-    try { if(!sessionStorage.getItem('v80_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v80_clean','true'); } } catch(e){}
+    try { if(!sessionStorage.getItem('v81_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v81_clean','true'); } } catch(e){}
 
     const W = 340, H = 340; 
     const TW = 150, TH = 150; 
     const ctxP = document.getElementById('simCanvas').getContext('2d');
     const ctxT = document.getElementById('targetCanvas').getContext('2d');
     
-    // TEXTURAS: RUTAS CORREGIDAS A MINÚSCULAS SEGÚN TU CARPETA
+    // TEXTURAS: ACTUALIZADAS A CAPITALIZADAS DONDE PEDISTE
     const textureFiles = { 
-        0:'img/cielo.jpg', 
+        0:'img/Cielo.jpg',         // PEDIDO: Cielo
         1:'img/arenisca.jpg', 
-        2:'img/pizarra.jpg', 
-        3:'img/caliza.jpg',        // CORREGIDO: minúsculas
-        4:'img/conglomerado.jpg',  // CORREGIDO: minúsculas
+        2:'img/Pizarra.jpg',       // PEDIDO: PIzarra (Puesta Pizarra)
+        3:'img/caliza.jpg',        
+        4:'img/Conglomerado.jpg',  // PEDIDO: Conglomerado
         8:'img/magma.jpg', 
         9:'img/basament.jpg' 
     };
@@ -481,7 +481,7 @@
         targetGrid=initGrid(TW,TH); LEVELS[i].seq.forEach(a=>action(a,targetGrid,TW,TH)); 
         drawSchematic(targetGrid,ctxT,TW,TH);
         resetLevel();
-    }
+    }https://github.com/Ernestosantanafoto/GEO_LOGIC/blob/main/index.html
 
     function resetLevel() { grid=initGrid(W,H); history=[]; userSeq=[]; undoCount=0; if(isPlayground) drawSchematic(grid, ctxT, TW, TH);}
     
