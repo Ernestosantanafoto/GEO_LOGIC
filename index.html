@@ -1,8 +1,10 @@
-<html lang="es"><head>
+<!DOCTYPE html>
+<html lang="es">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO-LOGIC: Spaced &amp; Small (v84)</title>
-<style>
+    <title>GEO-LOGIC: Master Combined (v99)</title>
+    <style>
         /* --- ESTILOS GENERALES --- */
         :root { 
             --bg-color: #F0F4F8; 
@@ -11,72 +13,98 @@
             --shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
+        /* --- BLOQUEO TOTAL (ESTILO APP) --- */
+        html, body {
+            width: 100%; height: 100%; margin: 0; padding: 0;
+            overflow: hidden;           /* Sin scroll */
+            position: fixed;            /* Clavado a la pantalla */
+            overscroll-behavior: none;  /* Sin rebote */
+            touch-action: none;         /* Sin gestos de zoom */
+        }
+
         body { 
             background-color: var(--bg-color); 
-            /* --- INICIO CONFIGURACIÓN DE FONDO --- */
-            background-image: url('img/fondo.jpg'); /* Asegúrate de que la imagen se llame así y esté en la carpeta img */
-            background-repeat: repeat;              /* 'repeat' para mosaico, 'no-repeat' para una sola vez */
-            background-size: 300px;                 /* Ajusta este número para que el patrón sea más grande o pequeño */
+            background-image: url('img/fondo.jpg'); 
+            background-repeat: repeat; 
+            background-size: 300px; 
             background-position: center;
-            background-attachment: fixed;           /* 'fixed' para que el fondo no se mueva al hacer scroll */
-            /* --- FIN CONFIGURACIÓN DE FONDO --- */
+            background-attachment: fixed; /* Mantiene el fondo estático visualmente */
+            
             color: var(--text-color); 
             font-family: 'Segoe UI', 'Roboto', sans-serif; 
-            margin: 0; height: 100vh; overflow: hidden; 
             display: flex; flex-direction: column; align-items: center; 
             user-select: none; -webkit-tap-highlight-color: transparent;
         }
         
-       .screen { 
+        /* CAPA DE INTERFAZ (CRISTAL) */
+        .screen { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             
-            /* --- CAMBIO IMPORTANTE AQUÍ --- */
-            /* Antes ponía: var(--bg-color). Cámbialo a esto: */
-            background: rgba(240, 244, 248, 0.5); /* El 0.5 hace que sea semitransparente para ver el fondo */
-            backdrop-filter: blur(0px);           /* Opcional: difumina un poco tu foto para que el texto se lea mejor */
-            /* ----------------------------- */
-
+            background: rgba(240, 244, 248, 0.5); /* Semitransparente estilo v84 */
+            backdrop-filter: blur(0px);            /* Sin blur excesivo */
+            
             transition: opacity 0.3s; opacity: 0; pointer-events: none; z-index: 0; 
         }
         .screen.active { opacity: 1; pointer-events: all; z-index: 10; }
 
         /* --- MENÚ PRINCIPAL --- */
         .main-logo { max-width: 85%; width: 450px; margin-bottom: 1.5rem; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.15)); }
+        
         .menu-btn { 
             width: 240px; padding: 15px; margin: 6px; 
             background: var(--accent-color); color: white; 
             border: none; border-radius: 30px; font-size: 1.1rem; font-weight: bold; 
             text-transform: uppercase; cursor: pointer; box-shadow: var(--shadow);
+            /* Borde sutil del estilo v98 para consistencia, pero forma v84 */
+            border: 2px solid rgba(255,255,255,0.3); touch-action: manipulation;
         }
         .menu-btn:active { transform: translateY(2px); }
         .menu-btn.secondary { background: #555; font-size: 0.9rem; }
-        .menu-btn.creative { background: #d35400; font-size: 0.95rem; margin-bottom:7px; }
+        .menu-btn.creative { background: #d35400; font-size: 0.95rem; margin-bottom: 7px; }
 
         /* --- NIVELES --- */
-        .levels-container { width: 90%; max-width: 600px; max-height: 70vh; overflow-y: auto; padding: 10px; }
+        .levels-container { 
+            width: 90%; max-width: 600px; max-height: 70vh; 
+            overflow-y: auto; touch-action: pan-y; padding: 10px; 
+            background: rgba(255, 255, 255, 0.85); border-radius: 15px; box-shadow: var(--shadow);
+        }
         .levels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; justify-items: center; }
-        .level-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; }
+        .level-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; touch-action: manipulation; }
         .level-card:active { transform: scale(0.95); }
         
-        .level-box { 
-            width: 70px; height: 70px; background: #ddd; border-radius: 10px; 
-            overflow: hidden; border: 3px solid white; box-shadow: var(--shadow);
-            display: flex; align-items: center; justify-content: center;
-            position: relative;
-        }
+        .level-box { width: 70px; height: 70px; background: #ddd; border-radius: 10px; overflow: hidden; border: 3px solid white; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; position: relative; }
         .level-box canvas { width: 100%; height: 100%; image-rendering: pixelated; }
         .level-card.locked { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
         .stars { font-size: 14px; margin-top: 5px; color: #FFD700; text-shadow: 0 1px 1px rgba(0,0,0,0.2); height: 20px; letter-spacing: 1px; }
 
-        /* --- JUEGO (LAYOUT PRO) --- */
+        /* INPUT CÓDIGO (Estilo limpio v98) */
+        .code-bar {
+            display: flex; gap: 5px; width: 90%; max-width: 600px; margin-bottom: 10px;
+            align-items: center; justify-content: center;
+        }
+        .code-input {
+            flex-grow: 1; padding: 10px; border-radius: 8px; border: 2px solid #ccc;
+            font-family: 'Segoe UI', sans-serif; font-weight: bold; text-align: center;
+            letter-spacing: 3px; font-size: 1rem; color: var(--accent-color); outline: none;
+            background: rgba(255,255,255,0.9);
+        }
+        .code-input:focus { border-color: var(--accent-color); }
+        .btn-code {
+            padding: 10px 20px; background: #555; color: white; border: none; border-radius: 8px;
+            font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+        }
+        .btn-code:active { transform: translateY(2px); box-shadow: none; }
+        #code-feedback { font-size: 0.75rem; font-weight: bold; margin-bottom: 10px; height: 15px; text-shadow: 0 1px 2px white; }
+
+
+        /* --- JUEGO (LAYOUT PRO v84) --- */
         #game-layout {
             display: flex; flex-direction: column; align-items: center; 
             width: 100%; height: 100%; padding-top: 10px;
             max-width: 600px; 
         }
 
-        /* CABECERA */
         .header-bar { 
             display: grid; grid-template-columns: 70px 1fr 70px; 
             width: 95%; margin-bottom: 10px; align-items: center; 
@@ -84,7 +112,7 @@
         .back-btn-game { 
             background: #555; color: white; border: none; padding: 6px 10px; 
             border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.7rem; 
-            box-shadow: var(--shadow); justify-self: start;
+            box-shadow: var(--shadow); justify-self: start; touch-action: manipulation;
         }
         .title-group { text-align: center; }
         #level-num { font-size: 0.75rem; color: #777; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
@@ -102,8 +130,8 @@
             box-shadow: var(--shadow); margin-bottom: 15px;
             display: flex; flex-direction: column; align-items: center;
         }
-        /* Escritorio: 130px */
-        #targetCanvas { width: 100px; height: 100px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; }
+        /* Escritorio: 130px (v98/v84 PC) */
+        #targetCanvas { width: 100px; height: 100px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; border: 2px solid white; }
         .label-target { font-size: 0.65rem; color: #888; font-weight: bold; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
 
         #info-box {
@@ -114,36 +142,30 @@
         #info-box.visible { opacity: 1; }
 
         .right-panel { display: flex; flex-direction: column; align-items: center; padding-bottom: 13px; }
+        
         #simCanvas { 
-            width: 340px; 
-            height: 340px; 
-            background: #BFEFFF; 
-            image-rendering: pixelated; 
-            
-            /* --- AÑADE ESTO --- */
-            border: 2px solid white;  /* Grosor y color */
-            border-radius: 12px;      /* Redondeado de esquinas (opcional) */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5); /* Sombra para que destaque del fondo */
-            /* ------------------ */
+            width: 340px; height: 340px; 
+            background: #BFEFFF; image-rendering: pixelated; 
+            /* Estilo borde blanco limpio */
+            border: 2px solid white; border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            touch-action: none; 
         }
         #msg { height: 20px; font-weight: 900; margin-top: 5px; color: var(--accent-color); text-align: center; font-size: 1rem; text-shadow: 0 1px 0 white; }
 
         /* CONTROLES (Escritorio) */
         .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 95%; max-width: 500px; }
         .tool-btn { 
-            aspect-ratio: 1; 
-            border-radius: 10px; 
-            
-            /* --- CAMBIO AQUÍ --- */
-            /* Antes tenías: border: none; */
-            border: 2px solid rgba(39, 39, 39, 0.4); /* Borde blanco semitransparente */
-            /* ------------------- */
+            aspect-ratio: 1; border-radius: 10px; 
+            /* Borde semitransparente oscuro como en tu código favorito */
+            border: 2px solid rgba(39, 39, 39, 0.4); 
             
             cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             font-size: 0.6rem; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
             position: relative; overflow: hidden; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
             transition: transform 0.1s, box-shadow 0.1s; background-color: #888;
+            touch-action: manipulation;
         }
         .tool-btn:active { transform: translateY(3px); box-shadow: none; }
         .btn-tex { position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.9; z-index: 0; background-size: cover; background-position: center; }
@@ -157,7 +179,7 @@
         .help-wrapper { background: white; padding: 0; border-radius: 15px; max-width: 550px; width: 95%; height: 80vh; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; }
         .help-header { background: var(--accent-color); color: white; padding: 20px; text-align: center; flex-shrink: 0; }
         .help-header h2 { margin: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; }
-        .help-body { padding: 25px; overflow-y: auto; flex-grow: 1; }
+        .help-body { padding: 25px; overflow-y: auto; flex-grow: 1; touch-action: pan-y; }
         .help-section { margin-bottom: 25px; }
         .help-title { color: var(--accent-color); border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 10px; font-size: 1.1rem; }
         .help-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -173,15 +195,23 @@
             .header-bar { margin-bottom: 2px; }
             #level-title { font-size: 1rem; }
             .main-stage { flex-direction: column; align-items: center; gap: 2px; margin-bottom: 2px; }
-            .left-panel { flex-direction: row; width: auto; justify-content: space-around; align-items: center; gap: 18px; margin-bottom: 12px; }
             
-            /* Objetivo MUY pequeño (100px) */
+            /* Layout espaciado horizontalmente para el panel izquierdo (objetivo + texto) */
+            .left-panel { 
+                flex-direction: row; width: auto; justify-content: space-around; 
+                align-items: center; gap: 18px; margin-bottom: 12px; 
+            }
+            
             .target-wrapper { margin-bottom: 0; padding: 2px; }
             #targetCanvas { width: 100px; height: 100px; }
             .label-target { font-size: 0.55rem; margin-top: 1px; }
             
             /* Info box compacta */
-            #info-box { width: 160px; height: 116px; font-size: 0.8rem; padding: 13px; line-height: 1,1; align-content: center;}
+            #info-box { 
+                width: 160px; height: 116px; font-size: 0.8rem; 
+                padding: 13px; line-height: 1.1; align-content: center;
+                display: flex; align-items: center; justify-content: center;
+            }
             
             /* Lienzo principal y mensaje */
             #simCanvas { width: 280px; height: 280px; }
@@ -198,7 +228,13 @@
                 box-shadow: 0 2px 0 rgba(0,0,0,0.2); 
             }
             .tool-btn:active { transform: translateY(2px); }
-            .btn-label { font-size: 0.5rem; padding-bo…</style>
+            .btn-label { font-size: 0.5rem; padding-bottom: 2px; letter-spacing: 0; }
+            .btn-icon-locked { font-size: 1.2rem; }
+            
+            .btn-sys { height: 30px; font-size: 0.65rem; }
+            .btn-check { height: 35px; font-size: 0.85rem; margin-top: 2px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -208,15 +244,22 @@
         <button class="menu-btn secondary" onclick="showLevels()">NIVELES</button>
         <button class="menu-btn creative" onclick="enterPlayground()">PLAYGROUND</button>
         <button class="menu-btn secondary" onclick="showHelp()">AYUDA</button>
-        <div style="margin-top:10px; color:#aaa; font-size:0.7rem;" id="loading-text">por Ernesto Santana</div>
+        <div style="margin-top:10px; color:#333; font-weight:bold; font-size:0.7rem; text-shadow:0 0 5px white;" id="loading-text">Cargando...</div>
     </div>
 
     <div id="screen-levels" class="screen">
-        <div style="width:90%; max-width:600px; display:flex; align-items:left; margin-bottom:20px;">
-            <button class="back-btn-game" onclick="showMenu()">«</button>
-            <h2 style="flex-grow:1; text-align:center; margin:0; color:#1a3c3c;">NIVELES</h2>
+        <div style="width:90%; max-width:600px; display:flex; align-items:center; margin-bottom:10px; background:rgba(255,255,255,0.9); padding:10px; border-radius:10px;">
+            <button class="back-btn-game" onclick="showMenu()">« MENÚ</button>
+            <h2 style="flex-grow:1; text-align:center; margin:0; color:var(--accent-color);">NIVELES</h2>
             <div style="width:60px;"></div>
         </div>
+
+        <div class="code-bar">
+            <input type="text" inputmode="numeric" id="level-code-input" class="code-input" placeholder="CÓDIGO">
+            <button class="btn-code" onclick="unlockWithCode()">OK</button>
+        </div>
+        <div id="code-feedback"></div>
+
         <div class="levels-container">
             <div id="levels-grid" class="levels-grid"></div>
         </div>
@@ -226,7 +269,7 @@
         <div id="game-layout">
             <div class="header-bar">
                 <button class="back-btn-game" onclick="showMenu()">« MENÚ</button>
-                <div class="title-group"><div id="level-num"></div><h3 id="level-title">MODO CREATIVO</h3></div>
+                <div class="title-group"><div id="level-num">NIVEL 1</div><h3 id="level-title">...</h3></div>
                 <div></div>
             </div>
 
@@ -236,7 +279,7 @@
                         <canvas id="targetCanvas" width="130" height="130"></canvas>
                         <div class="label-target">OBJETIVO</div>
                     </div>
-                    <div id="info-box" class="visible">MODO LIBRE<br>Crea y experimenta sin límites.</div>
+                    <div id="info-box"></div>
                 </div>
                 <div class="right-panel">
                     <canvas id="simCanvas" width="340" height="340"></canvas>
@@ -250,14 +293,14 @@
                 <button class="tool-btn" onclick="action(3)"><div class="btn-tex" style="background-image:url('img/caliza.jpg'); background-color:#F0E68C"></div><span class="btn-label">CALIZA</span></button>
                 <button class="tool-btn" onclick="action(4)"><div class="btn-tex" style="background-image:url('img/Conglomerado.jpg'); background-color:#8B4513"></div><span class="btn-label">CONGLOM.</span></button>
 
-                <button class="tool-btn btn-grey" id="btn-erosion" onclick="action(5)" data-label="EROSIÓN" data-img="EROSION.jpg" style="pointer-events: all;"><div class="btn-tex" style="background-image:url('img/EROSION.jpg');"></div><span class="btn-label">EROSIÓN</span></button>
-                <button class="tool-btn btn-grey" id="btn-fold" onclick="action(6)" data-label="PLIEGUE" data-img="PLIEGUE.jpg" style="pointer-events: all;"><div class="btn-tex" style="background-image:url('img/PLIEGUE.jpg');"></div><span class="btn-label">PLIEGUE</span></button>
-                <button class="tool-btn btn-grey" id="btn-fault" onclick="action(7)" data-label="FALLA" data-img="FALLA.jpg" style="pointer-events: all;"><div class="btn-tex" style="background-image:url('img/FALLA.jpg');"></div><span class="btn-label">FALLA</span></button>
-                <button class="tool-btn btn-grey" id="btn-intrusion" onclick="action(8)" data-label="INTRUSION" data-img="INTRUSION.jpg" style="pointer-events: all;"><div class="btn-tex" style="background-image:url('img/INTRUSION.jpg');"></div><span class="btn-label">INTRUSION</span></button>
+                <button class="tool-btn btn-grey" id="btn-erosion" onclick="action(5)" data-label="EROSIÓN" data-img="EROSION.jpg"><div class="btn-tex" style="background-image:url('img/EROSION.jpg');"></div><span class="btn-label">EROSIÓN</span></button>
+                <button class="tool-btn btn-grey" id="btn-fold" onclick="action(6)" data-label="PLIEGUE" data-img="PLIEGUE.jpg"><div class="btn-tex" style="background-image:url('img/PLIEGUE.jpg');"></div><span class="btn-label">PLIEGUE</span></button>
+                <button class="tool-btn btn-grey" id="btn-fault" onclick="action(7)" data-label="FALLA" data-img="FALLA.jpg"><div class="btn-tex" style="background-image:url('img/FALLA.jpg');"></div><span class="btn-label">FALLA</span></button>
+                <button class="tool-btn btn-grey" id="btn-intrusion" onclick="action(8)" data-label="INTRUSION" data-img="INTRUSION.jpg"><div class="btn-tex" style="background-image:url('img/INTRUSION.jpg');"></div><span class="btn-label">INTRUSION</span></button>
 
                 <button class="tool-btn btn-sys" onclick="undo()">DESHACER</button>
                 <button class="tool-btn btn-sys" onclick="resetLevel()">LIMPIAR</button>
-                <button class="tool-btn btn-check" id="btn-check" onclick="check()" style="display: none;">COMPROBAR</button>
+                <button class="tool-btn btn-check" id="btn-check" onclick="check()">COMPROBAR</button>
             </div>
         </div>
     </div>
@@ -311,7 +354,7 @@
     </div>
 
 <script>
-    try { if(!sessionStorage.getItem('v84_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v84_clean','true'); } } catch(e){}
+    try { if(!sessionStorage.getItem('v99_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v99_clean','true'); } } catch(e){}
 
     const W = 340, H = 340; 
     const TW = 130, TH = 130; 
@@ -341,49 +384,54 @@
     const SCHEMATIC_COLORS = { 0:[153,208,223], 1:[221,189,137], 2:[70,76,82], 3:[226,226,226], 4:[100,73,43], 8:[220,85,40], 9:[19,36,37] };
     const COLORS = { 0:[191,239,255], 9:[47,79,79], 1:[244,164,96], 2:[112,128,144], 3:[240,230,140], 4:[139,69,19], 8:[220,85,40] };
 
-const LEVELS = [
-        { id:1, name:"Principios Básicos", seq:[1,2,3], desc:"Ley de Superposición: Las capas más jóvenes siempre se depositan encima de las antiguas." },
-        { id:2, name:"Torre Sedimentaria", seq:[3,2,1,4,3,2], desc:"Un registro continuo de deposición sin interrupciones geológicas." },
-        { id:3, name:"Cimientos", seq:[2,1,1,3,4], desc:"Las capas inferiores soportan la presión de todo el peso superior." },
-        { id:4, name:"Emparedado", seq:[1,4,4,1], desc:"Cambios en el nivel del mar pueden alternar los tipos de sedimento depositado." },
-        { id:5, name:"Primera Erosión", seq:[3,1,2,5], desc:"La erosión borra parte de la historia geológica." },
-        { id:6, name:"Discordancia", seq:[4,5,1,3], desc:"Una discordancia representa un periodo de tiempo donde no hubo sedimentación." },
-        { id:7, name:"Valles y Cumbres", seq:[5,3,2,1,5,4], desc:"La erosión diferencial talla valles en rocas blandas y deja cumbres en rocas duras." },
-        { id:8, name:"Desgaste Total", seq:[5,3,5,2,5,1,5,4,5], desc:"La peneplanicie es una superficie casi plana formada por una erosión prolongada." },
-        { id:9, name:"El Gran Cañón", seq:[3,2,5,5,5,1], desc:"El río Colorado ha expuesto rocas de casi 2.000 millones de años de antigüedad." },
-        { id:10, name:"Paleorrelieve", seq:[4,3,5,5,2,5,1,1], desc:"Antiguas colinas enterradas bajo nuevos sedimentos crean un paleorrelieve." },
-        { id:11, name:"Fuerzas Compresivas", seq:[1,2,3,6], desc:"La tectónica de placas comprime la corteza creando ondulaciones." },
-        { id:12, name:"Base Ondulada", seq:[6,1,2,3], desc:"Sedimentar sobre una superficie plegada rellena primero los huecos (sinclinales)." },
-        { id:13, name:"Sinclinal Oculto", seq:[1,3,6,4,2], desc:"Un sinclinal es un pliegue en forma de 'U' donde las rocas más jóvenes quedan en el centro." },
-        { id:14, name:"Orogénesis", seq:[3,4,6,1,2,6], desc:"La orogénesis es el proceso de formación de montañas mediante deformación." },
-        { id:15, name:"Anticlinal Erosionado", seq:[3,4,5,5,6], desc:"En un anticlinal erosionado, las rocas más antiguas quedan expuestas en el centro." },
-        { id:16, name:"Tectónica Activa", seq:[1,3,5,5,6,4], desc:"La tierra nunca está quieta; plegamiento y deposición ocurren en ciclos." },
-        { id:17, name:"Discordancia Angular", seq:[2,1,6,5,4], desc:"Capas horizontales sobre capas plegadas: la firma de una gran convulsión geológica." },
-        { id:18, name:"Caos Tectónico", seq:[3,2,6,5,5,1,6,4], desc:"Múltiples eventos de deformación hacen difícil leer el pasado." },
-        { id:19, name:"Ruptura", seq:[1,2,3,7], desc:"Cuando la roca supera su límite elástico, se rompe formando una falla." },
-        { id:20, name:"Falla Activa", seq:[1,2,3,7,4], desc:"Una falla puede reactivarse millones de años después de formarse." },
-        { id:21, name:"Trampa Petrolífera", seq:[1,3,4,6,7], desc:"El petróleo a menudo queda atrapado en anticlinales cortados por fallas." },
-        { id:22, name:"Bloque Elevado", seq:[1,4,2,5,7], desc:"El movimiento vertical de fallas puede crear mesetas y cordilleras." },
-        { id:23, name:"Graben", seq:[4,3,2,7,5], desc:"Un bloque hundido entre dos fallas paralelas forma una fosa tectónica o Graben." },
-        { id:24, name:"Historia Rota", seq:[1,5,5,2,3,7], desc:"Las fallas pueden poner en contacto rocas de edades muy diferentes." },
-        { id:25, name:"Sistema de Fallas", seq:[4,2,3,7,1,7], desc:"Las fallas rara vez vienen solas; suelen formar sistemas complejos." },
-        { id:26, name:"El Dique", seq:[1,2,3,8], desc:"Un dique es una intrusión magmática vertical que corta capas preexistentes." }, 
-        { id:27, name:"Volcán Dormido", seq:[4,3,2,8,5], desc:"La erosión puede eliminar el cono volcánico, dejando solo el cuello de magma." }, 
-        { id:28, name:"Inyección Reciente", seq:[1,2,5,3,8], desc:"Principio de Corte: La intrusión es siempre más joven que la roca que corta." }, 
-        { id:29, name:"Pliegue Cortado", seq:[1,2,6,8], desc:"Si el dique no está plegado, la intrusión ocurrió después del plegamiento." }, 
-        { id:30, name:"Dique Plegado", seq:[1,2,8,6], desc:"Si el dique está doblado, la compresión tectónica continuó tras la intrusión." }, 
-        { id:31, name:"Dique Fallado", seq:[3,4,8,7], desc:"Una falla que corta un dique indica actividad tectónica muy reciente." }, 
-        { id:32, name:"Cicatriz Ígnea", seq:[3,4,7,8], desc:"El magma aprovecha las debilidades de las fallas para ascender." }, 
-        { id:33, name:"Discordancia Magmática", seq:[1,2,8,5,4], desc:"Roca sedimentaria depositada directamente sobre roca ígnea erosionada." }, 
-        { id:34, name:"Intrusión Profunda", seq:[2,3,6,5,8,1], desc:"Los plutones son grandes masas de magma que se enfrían lentamente bajo tierra." }, 
-        { id:35, name:"Tectónica Ígnea", seq:[1,2,8,6,7], desc:"El calor del magma puede alterar las propiedades mecánicas de la roca circundante." }, 
-        { id:36, name:"Doble Evento", seq:[4,8,5,1,8], desc:"Dos generaciones de magmatismo separadas por un evento erosivo." }, 
-        { id:37, name:"La Chimenea", seq:[2,6,5,3,7,8], desc:"Conducto principal por donde el magma intentó alcanzar la superficie." }, 
-        { id:38, name:"Bloque Magmático", seq:[1,2,8,5,7,5,5], desc:"La erosión diferencial deja el granito en resalte frente a la arenisca." }, 
-        { id:39, name:"Historia Completa", seq:[3,2,6,5,4,8,7], desc:"Sedimentación, orogénesis, erosión, magmatismo y ruptura final." }, 
-        { id:40, name:"El Gran Ciclo", seq:[1,2,3,6,5,7,8,5,4], desc:"El ciclo de las rocas: creación, destrucción y reciclaje constante." },
-        { id:41, name:"Tectónica Cruzada", seq:[2,3,6,5,1,8,7], desc:"Interacción compleja entre fuerzas compresivas y extensivas." }, 
-        { id:42, name:"Caos Primordial", seq:[4,3,8,6,5,2,1,7], desc:"Solo un geólogo experto puede desenredar esta secuencia de eventos." }
+    // --- LISTA DE NIVELES CON DESCRIPCIONES DIDÁCTICAS ---
+    const LEVELS = [
+        { id:1, name:"Principios Básicos", seq:[1,2,3], desc:"Como hacer una lasaña: la capa que está abajo del todo es la que pusiste primero." },
+        { id:2, name:"Torre Sedimentaria", seq:[3,2,1,4,3,2], desc:"La historia de la Tierra se escribe página a página, o mejor dicho, capa a capa." },
+        { id:3, name:"Cimientos", seq:[2,1,1,3,4], desc:"Las capas inferiores son las más antiguas y soportan todo el peso de la historia." },
+        { id:4, name:"Emparedado", seq:[1,4,4,1], desc:"A veces el mar sube y baja, cambiando el tipo de arena o roca que se deposita." },
+        
+        { id:5, name:"Primera Erosión", seq:[3,1,2,5], desc:"¡La goma de borrar de la naturaleza! El viento y el agua han desgastado la superficie." },
+        { id:6, name:"Discordancia", seq:[4,5,1,3], desc:"¿Ves esa línea ondulada? Faltan páginas en el libro de historia; fueron borradas por la erosión." },
+        { id:7, name:"Valles y Cumbres", seq:[5,3,2,1,5,4], desc:"La erosión no es igual para todos: las rocas blandas se desgastan rápido y forman valles." },
+        { id:8, name:"Desgaste Total", seq:[5,3,5,2,5,1,5,4,5], desc:"Si le das suficiente tiempo, la naturaleza lo aplana todo hasta dejarlo como una mesa." },
+        { id:9, name:"El Gran Cañón", seq:[3,2,5,5,5,1], desc:"Un río con paciencia puede cortar un pastel de roca de millones de años de antigüedad." },
+        { id:10, name:"Paleorrelieve", seq:[4,3,5,5,2,5,1,1], desc:"Enterramos unas antiguas colinas bajo tierra nueva. ¡Un paisaje oculto en el subsuelo!" },
+        
+        { id:11, name:"Fuerzas Compresivas", seq:[1,2,3,6], desc:"Imagina empujar una alfombra contra la pared. ¡La roca sólida también se arruga si aprietas fuerte!" },
+        { id:12, name:"Base Ondulada", seq:[6,1,2,3], desc:"Al depositar arena sobre un suelo arrugado, primero se rellenan los huecos." },
+        { id:13, name:"Sinclinal Oculto", seq:[1,3,6,4,2], desc:"Un pliegue en forma de 'U' (Sinclinal). Las rocas más jóvenes quedan protegidas en el centro." },
+        { id:14, name:"Orogénesis", seq:[3,4,6,1,2,6], desc:"¡Así nacen las montañas! Fuerzas titánicas doblan la corteza y la empujan hacia el cielo." },
+        { id:15, name:"Anticlinal Erosionado", seq:[3,4,5,5,6], desc:"Un pliegue tipo arco (Anticlinal). Si le cortas la 'cabeza', ves el corazón antiguo de la montaña." },
+        { id:16, name:"Tectónica Activa", seq:[1,3,5,5,6,4], desc:"Un ciclo completo: depositar, doblar, borrar y volver a depositar. La Tierra nunca descansa." },
+        { id:17, name:"Discordancia Angular", seq:[2,1,6,5,4], desc:"Capas planas durmiendo sobre capas dobladas. ¡Aquí hubo un gran cataclismo en el pasado!" },
+        { id:18, name:"Caos Tectónico", seq:[3,2,6,5,5,1,6,4], desc:"Doblar, romper, erosionar... A veces la historia es un rompecabezas difícil de leer." },
+        
+        { id:19, name:"Ruptura", seq:[1,2,3,7], desc:"¡CRACK! La roca no aguantó más presión y se partió. Fíjate cómo un lado se deslizó." },
+        { id:20, name:"Falla Activa", seq:[1,2,3,7,4], desc:"Después de romperse, la vida sigue. Nuevas capas cubren la vieja cicatriz." },
+        { id:21, name:"Trampa Petrolífera", seq:[1,3,4,6,7], desc:"El petróleo suele quedar atrapado en estas 'trampas' donde la roca se dobla y rompe." },
+        { id:22, name:"Bloque Elevado", seq:[1,4,2,5,7], desc:"Dos fallas pueden empujar un bloque hacia arriba, creando una meseta cuadrada." },
+        { id:23, name:"Graben", seq:[4,3,2,7,5], desc:"O al revés: el suelo se hunde entre dos grietas formando una fosa o 'Graben'." },
+        { id:24, name:"Historia Rota", seq:[1,5,5,2,3,7], desc:"La falla ha puesto frente a frente a rocas que son 'abuelas' con rocas 'nietas'." },
+        { id:25, name:"Sistema de Fallas", seq:[4,2,3,7,1,7], desc:"Como un parabrisas roto, la tierra suele quebrarse por varios sitios a la vez." },
+        
+        { id:26, name:"El Dique", seq:[1,2,3,8], desc:"¡Magma al ataque! Roca fundida inyectada desde abajo cortando todo a su paso como un cuchillo." }, 
+        { id:27, name:"Volcán Dormido", seq:[4,3,2,8,5], desc:"Hubo un volcán aquí, pero la erosión se llevó el cono y solo dejó el tubo de alimentación." }, 
+        { id:28, name:"Inyección Reciente", seq:[1,2,5,3,8], desc:"Regla de oro: Si el magma corta a una roca, el magma llegó ÚLTIMO (es más joven)." }, 
+        { id:29, name:"Pliegue Cortado", seq:[1,2,6,8], desc:"Fíjate bien: el dique está recto. Eso significa que entró DESPUÉS de que la tierra se doblara." }, 
+        { id:30, name:"Dique Plegado", seq:[1,2,8,6], desc:"¡El dique está torcido! Primero entró el magma, y LUEGO la tierra se arrugó." }, 
+        { id:31, name:"Dique Fallado", seq:[3,4,8,7], desc:"La falla ha cortado al dique en dos. ¡Pobre dique, qué mala suerte!" }, 
+        { id:32, name:"Cicatriz Ígnea", seq:[3,4,7,8], desc:"El magma es perezoso: a veces aprovecha una falla vieja para colarse hacia arriba." }, 
+        { id:33, name:"Discordancia Magmática", seq:[1,2,8,5,4], desc:"Una antigua colada de lava que se enfrió, se erosionó y quedó enterrada." }, 
+        { id:34, name:"Intrusión Profunda", seq:[2,3,6,5,8,1], desc:"Una burbuja gigante de magma (Plutón) que se enfrió lentamente bajo tierra." }, 
+        { id:35, name:"Tectónica Ígnea", seq:[1,2,8,6,7], desc:"El magma caliente puede debilitar la roca y hacer que todo se rompa y doble más fácil." }, 
+        { id:36, name:"Doble Evento", seq:[4,8,5,1,8], desc:"Dos inyecciones de magma separadas por millones de años. ¿Cuál fue primero?" }, 
+        { id:37, name:"La Chimenea", seq:[2,6,5,3,7,8], desc:"Un complejo sistema de tuberías volcánicas deformado por el movimiento de la tierra." }, 
+        { id:38, name:"Bloque Magmático", seq:[1,2,8,5,7,5,5], desc:"La roca volcánica suele ser más dura y resiste mejor la erosión, quedando en resalte." }, 
+        { id:39, name:"Historia Completa", seq:[3,2,6,5,4,8,7], desc:"Sedimentar, doblar, erosionar, inyectar magma, romper... ¡Vaya día ajetreado!" }, 
+        { id:40, name:"El Gran Ciclo", seq:[1,2,3,6,5,7,8,5,4], desc:"El ciclo de las rocas: nada se pierde, todo se recicla, se funde o se erosiona." }, 
+        { id:41, name:"Tectónica Cruzada", seq:[2,3,6,5,1,8,7], desc:"Fuerzas que empujan y tiran en direcciones opuestas. Un rompecabezas 3D." }, 
+        { id:42, name:"Caos Primordial", seq:[4,3,8,6,5,2,1,7], desc:"La prueba final. Si puedes desenredar este nudo geológico, ¡te has ganado el título!" }
     ];
 
     let grid=[], targetGrid=[], history=[], userSeq=[], skyOff=0, undoCount=0;
@@ -426,7 +474,7 @@ const LEVELS = [
     }
 
     function action(id, g=grid, w=W, h=H) {
-        if(id===8 && !isPlayground) return; 
+        // CORREGIDO: SE ELIMINÓ EL BLOQUEO INCONDICIONAL DE INTRUSIÓN (ID 8)
         if(g===grid) {
             if(!isPlayground) {
                 let lvl = currentLvl + 1;
@@ -491,24 +539,16 @@ const LEVELS = [
         document.getElementById('btn-check').style.display = 'grid';
         const lvl = lvlIndex + 1;
         const box = document.getElementById('info-box');
-        
-        // LÓGICA DE MENSAJES:
-        // 1. Prioridad a los tutoriales de herramientas nuevas.
-        // 2. Si no es tutorial, muestra el dato curioso (desc) del array.
         let msg = "";
         
-        if(lvl === 1) msg = "¡Te doy la bienvenida!<br>Deposita capas de roca sedimentaria.";
+        if(lvl === 1) msg = "Bienvenido.<br>Deposita capas de roca sedimentaria.";
         else if(lvl === 5) msg = "¡NUEVA HERRAMIENTA!<br><strong>Erosión:</strong> Desgasta la superficie.";
         else if(lvl === 11) msg = "¡NUEVA HERRAMIENTA!<br><strong>Pliegue:</strong> Dobla las capas por presión.";
         else if(lvl === 19) msg = "¡NUEVA HERRAMIENTA!<br><strong>Falla:</strong> Rompe y desplaza la tierra.";
         else if(lvl === 26) msg = "¡NUEVA HERRAMIENTA!<br><strong>Intrusión:</strong> Magma que corta la roca.";
-        else {
-            // Aquí cargamos el "Lore" del array LEVELS
-            msg = LEVELS[lvlIndex].desc || "Observa el objetivo y replica la secuencia.";
-        }
+        else msg = LEVELS[lvlIndex].desc || "Replica la secuencia.";
 
         if(msg) { box.innerHTML = msg; box.classList.add('visible'); } else { box.classList.remove('visible'); }
-        
         configureButton('btn-erosion', lvl >= 5); configureButton('btn-fold', lvl >= 11); configureButton('btn-fault', lvl >= 19); configureButton('btn-intrusion', lvl >= 26);
     }
 
@@ -564,6 +604,26 @@ const LEVELS = [
         } else document.getElementById('msg').innerHTML="INCORRECTO";
     }
 
+    // --- FUNCIÓN DE CÓDIGO SECRETO ---
+    function unlockWithCode() {
+        const code = document.getElementById('level-code-input').value.trim();
+        const fb = document.getElementById('code-feedback');
+        let foundIndex = -1;
+        for(let i = 0; i < LEVELS.length; i++) {
+            if (LEVELS[i].seq.join('') === code) { foundIndex = i; break; }
+        }
+        if (foundIndex !== -1) {
+            const targetLevel = foundIndex + 1;
+            if (targetLevel < LEVELS.length) {
+                if (targetLevel > maxLvl) {
+                    maxLvl = targetLevel; localStorage.setItem('maxLvl', maxLvl);
+                    renderLevels(); fb.style.color = "green"; fb.innerText = "¡NIVEL " + (targetLevel + 1) + " DESBLOQUEADO!";
+                } else { fb.style.color = "#555"; fb.innerText = "Ya tienes desbloqueado este nivel."; }
+            } else { fb.style.color = "orange"; fb.innerText = "¡Ese es el código del último nivel!"; }
+        } else { fb.style.color = "red"; fb.innerText = "Código incorrecto."; }
+        setTimeout(() => { fb.innerText = ""; }, 2000);
+    }
+
     function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById('screen-'+id).classList.add('active'); }
     function showMenu(){ showScreen('menu'); } function showLevels(){ renderLevels(); showScreen('levels'); } function showHelp(){ showScreen('help'); } function continueGame(){ loadLevel(maxLvl); showScreen('game'); }
 
@@ -590,5 +650,5 @@ const LEVELS = [
     function loop() { skyOff+=0.25; if(document.getElementById('screen-game').classList.contains('active')) drawTextured(grid,ctxP,W,H); requestAnimationFrame(loop); }
     loop();
 </script>
-
-</body></html>
+</body>
+</html>
