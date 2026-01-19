@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO-LOGIC: Mobile Only (v101)</title>
+    <title>GEO-LOGIC: Playground Visual Fix (v108)</title>
     <style>
         /* --- ESTILOS GENERALES --- */
         :root { 
@@ -13,7 +13,7 @@
             --shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
-        /* BLOQUEO DE PANTALLA (APP STYLE) */
+        /* --- BLOQUEO TOTAL (ESTILO APP) --- */
         html, body {
             width: 100%; height: 100%; margin: 0; padding: 0;
             overflow: hidden; position: fixed; overscroll-behavior: none; touch-action: none;
@@ -22,23 +22,30 @@
         body { 
             background-color: var(--bg-color); 
             background-image: url('img/fondo.jpg'); 
-            background-repeat: repeat; background-size: 300px; background-position: center;
+            background-repeat: repeat; 
+            background-size: 300px; 
+            background-position: center;
             background-attachment: fixed;
-            color: var(--text-color); font-family: 'Segoe UI', 'Roboto', sans-serif; 
+            
+            color: var(--text-color); 
+            font-family: 'Segoe UI', 'Roboto', sans-serif; 
             display: flex; flex-direction: column; align-items: center; 
             user-select: none; -webkit-tap-highlight-color: transparent;
         }
         
-        /* CAPA CRISTAL (CONTENEDOR PRINCIPAL) */
+        /* CAPA DE INTERFAZ (CRISTAL) */
         .screen { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            background: rgba(240, 244, 248, 0.5); backdrop-filter: blur(0px);            
+            
+            background: rgba(240, 244, 248, 0.5); 
+            backdrop-filter: blur(0px);            
+            
             transition: opacity 0.3s; opacity: 0; pointer-events: none; z-index: 0; 
         }
-        .screen.active {opacity: 1;pointer-events: all;z-index: 10;}
+        .screen.active { opacity: 1; pointer-events: all; z-index: 10; }
 
-        /* --- MENÚ --- */
+        /* --- MENÚ PRINCIPAL --- */
         .main-logo { max-width: 85%; width: 280px; margin-bottom: 1.5rem; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.15)); }
         
         .menu-btn { 
@@ -61,121 +68,169 @@
         .levels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; justify-items: center; }
         .level-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; touch-action: manipulation; }
         .level-card:active { transform: scale(0.95); }
+        
         .level-box { width: 60px; height: 60px; background: #ddd; border-radius: 10px; overflow: hidden; border: 3px solid white; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; position: relative; }
         .level-box canvas { width: 100%; height: 100%; image-rendering: pixelated; }
         .level-card.locked { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
         .stars { font-size: 12px; margin-top: 3px; color: #FFD700; text-shadow: 0 1px 1px rgba(0,0,0,0.2); height: 15px; letter-spacing: 1px; }
 
         /* INPUT CÓDIGO */
-        .code-bar { display: flex; gap: 5px; width: 90%; max-width: 320px; margin-bottom: 10px; align-items: center; justify-content: center; }
-        .code-input { flex-grow: 1; padding: 10px; border-radius: 8px; border: 2px solid #ccc; font-family: 'Segoe UI', sans-serif; font-weight: bold; text-align: center; letter-spacing: 3px; font-size: 1rem; color: var(--accent-color); outline: none; background: rgba(255,255,255,0.9); }
+        .code-bar {
+            display: flex; gap: 5px; width: 90%; max-width: 320px; margin-bottom: 10px;
+            align-items: center; justify-content: center;
+        }
+        .code-input {
+            flex-grow: 1; padding: 10px; border-radius: 8px; border: 2px solid #ccc;
+            font-family: 'Segoe UI', sans-serif; font-weight: bold; text-align: center;
+            letter-spacing: 3px; font-size: 1rem; color: var(--accent-color); outline: none;
+            background: rgba(255,255,255,0.9);
+        }
         .code-input:focus { border-color: var(--accent-color); }
-        .btn-code { padding: 10px 15px; background: #555; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.2); }
+        .btn-code {
+            padding: 10px 15px; background: #555; color: white; border: none; border-radius: 8px;
+            font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+        }
         .btn-code:active { transform: translateY(2px); box-shadow: none; }
         #code-feedback { font-size: 0.75rem; font-weight: bold; margin-bottom: 10px; height: 15px; text-shadow: 0 1px 2px white; }
 
-        /* --- JUEGO (LAYOUT MÓVIL ESTÁTICO) --- */
+
+        /* --- JUEGO --- */
         #game-layout {
-            display: flex; flex-direction: column; align-items: center; 
-            width: 100%; height: 100%; padding-top: 5px;
-            max-width: 320px; /* Limitamos el ancho para que parezca móvil en PC */
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding-top: 5px;
+            max-width: 307px;
+            flex-direction: column;
         }
 
         .header-bar {
             display: grid;
-            grid-template-columns: 69px 1fr 11px;
-            width: 95%;
-            margin-bottom: 5px;
+            grid-template-columns: 61px 1fr 1px;
+            width: 94%;
+            margin-bottom: 6px;
             align-items: anchor-center;
             justify-items: end;
         }
         .back-btn-game {
-            background: #555;
+            background: #0d2b2b;
             color: white;
             border: none;
-            padding: 6px 10px;
-            border-radius: 20px;
+            padding: 10px 10px;
+            border-radius: 67px;
             font-weight: bold;
             cursor: pointer;
             font-size: 0.65rem;
             box-shadow: var(--shadow);
-            /* justify-self: start; */
+            justify-self: start;
             touch-action: manipulation;
         }
         .title-group {text-align: right;}
         #level-num { font-size: 0.65rem; color: #777; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        #level-title { margin: -3px 0 0 0; font-size: 1.1rem; color: var(--accent-color); font-weight: 900; line-height: 1.2; text-shadow: 0 1px 0 rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+        #level-title {margin: -2px 0 0 0;font-size: 1.1rem;color: var(--accent-color);font-weight: 900;line-height: 1.2;text-shadow: 0 1px 0 rgba(255,255,255,0.5);white-space: nowrap;/* overflow: auto; */text-overflow: ellipsis;max-width: 175px;}
 
-        /* ZONA CENTRAL (Siempre vertical) */
+        /* ZONA CENTRAL */
         .main-stage {
             display: flex; flex-direction: column; align-items: center;
             gap: 5px; width: 100%; margin-bottom: 5px;
         }
         
-        /* PANEL SUPERIOR (Objetivo + Info) */
         .left-panel {
             display: flex;
             flex-direction: row;
-            justify-content: space-around;
+            justify-content: center;
             align-items: center;
             width: 100%;
-            gap: 0;
-            margin-bottom: 5px;
+            gap: 22px;
+            margin-bottom: 6px;
         }
         
         .target-wrapper {
             background: white; padding: 3px; border-radius: 8px; 
             box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center;
+            cursor: pointer; position: relative; transition: transform 0.1s;
         }
+        .target-wrapper:active { transform: scale(0.95); }
+        
+        /* CLASE PARA DESACTIVAR EL OBJETIVO EN PLAYGROUND (SOLO CLICS) */
+        .target-wrapper.disabled {
+            /* Mantenemos el aspecto visual intacto, solo quitamos la interacción */
+            pointer-events: none;
+            cursor: default;
+        }
+
         #targetCanvas { width: 90px; height: 90px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; border: 2px solid white; }
         .label-target { font-size: 0.5rem; color: #888; font-weight: bold; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
 
         #info-box {
-            background-color: #0d2b2b;
-            color: #ecf0f1;
-            padding: 8px;
-            width: 154px;
-            height: 106px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.75rem;
-            line-height: 1.15;
-            box-shadow: var(--shadow);
-            box-sizing: border-box;
-            opacity: 0;
-            transition: opacity 0.3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            background-color: #0d2b2b; color: #ecf0f1; padding: 8px; 
+            width: 160px; height: 106px; border-radius: 8px; 
+            text-align: center; font-size: 0.75rem; line-height: 1.15; box-shadow: var(--shadow); box-sizing: border-box;
+            opacity: 0; transition: opacity 0.3s;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         #info-box.visible { opacity: 1; }
 
         .right-panel { display: flex; flex-direction: column; align-items: center; padding-bottom: 5px; }
         
+        .canvas-stack {
+            position: relative;
+            width: 280px; height: 280px;
+        }
+
         #simCanvas { 
+            position: absolute; top: 0; left: 0;
             width: 280px; height: 280px; 
             background: #BFEFFF; image-rendering: pixelated; 
             border: 3px solid white; border-radius: 12px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            touch-action: none; 
+            touch-action: none; z-index: 1;
         }
+
+        #overlayCanvas {
+            position: absolute; top: 0; left: 0;
+            width: 280px; height: 280px;
+            image-rendering: pixelated;
+            border: 3px solid transparent; border-radius: 12px; 
+            pointer-events: none; z-index: 5;
+            opacity: 0; transition: opacity 0.2s;
+        }
+        #overlayCanvas.visible { opacity: 0.6; }
+
         #msg { height: 18px; font-weight: 900; margin-top: 4px; color: var(--accent-color); text-align: center; font-size: 0.9rem; text-shadow: 0 1px 0 white; }
 
-        /* CONTROLES (Compactos) */
-        .controls-grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; 
-            width: 95%; max-width: 280px; 
+        /* CONTROLES */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 5fr);
+            gap: 4px;
+            width: 95%;
+            max-width: 290px;
+            te-columns: repeat(4, 1fr);
+            width: 98%;
+            width: 95%;
+            max-width: 280px;
         }
-        .tool-btn { 
-            aspect-ratio: 1; border-radius: 8px; 
-            border: 2px solid rgba(39, 39, 39, 0.4); 
+        .tool-btn {
+            aspect-ratio: 1;
+            border-radius: 9px;
+            border: 2px solid rgba(39, 39, 39, 3.4);
             cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 0.55rem; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-            position: relative; overflow: hidden; box-shadow: 0 3px 0 rgba(0,0,0,0.2);
-            transition: transform 0.1s, box-shadow 0.1s; background-color: #888;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 12.55rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+            transition: transform 0.1s, box-shadow 0.1s;
+            background-color: #888;
             touch-action: manipulation;
+            align-items: center;
         }
         .tool-btn:active { transform: translateY(2px); box-shadow: none; }
         .btn-tex { position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.9; z-index: 0; background-size: cover; background-position: center; }
@@ -240,14 +295,17 @@
 
             <div class="main-stage">
                 <div class="left-panel">
-                    <div class="target-wrapper">
+                    <div class="target-wrapper" id="targetBtn">
                         <canvas id="targetCanvas" width="90" height="90"></canvas>
                         <div class="label-target">OBJETIVO</div>
                     </div>
                     <div id="info-box"></div>
                 </div>
                 <div class="right-panel">
-                    <canvas id="simCanvas" width="280" height="280"></canvas>
+                    <div class="canvas-stack">
+                        <canvas id="simCanvas" width="280" height="280"></canvas>
+                        <canvas id="overlayCanvas" width="280" height="280"></canvas>
+                    </div>
                     <div id="msg"></div>
                 </div>
             </div>
@@ -319,13 +377,14 @@
     </div>
 
 <script>
-    try { if(!sessionStorage.getItem('v101_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v101_clean','true'); } } catch(e){}
+    try { if(!sessionStorage.getItem('v108_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v108_clean','true'); } } catch(e){}
 
-    // DIMENSIONES NATIVAS MÓVILES (280px)
     const W = 280, H = 280; 
-    const TW = 90, TH = 90; // Objetivo de 90px para que encaje
+    const TW = 90, TH = 90; 
     const ctxP = document.getElementById('simCanvas').getContext('2d');
     const ctxT = document.getElementById('targetCanvas').getContext('2d');
+    const overlayCanvas = document.getElementById('overlayCanvas');
+    const ctxO = overlayCanvas.getContext('2d');
     
     const textureFiles = { 
         0:'img/Cielo.jpg', 
@@ -353,7 +412,7 @@
     const LEVELS = [
         { id:1, name:"Principios Básicos", seq:[1,2,3], desc:"Como hacer una lasaña: la capa que está abajo del todo es la que pusiste primero." },
         { id:2, name:"Torre Sedimentaria", seq:[3,2,1,4,3,2], desc:"La historia de la Tierra se escribe página a página, o mejor dicho, capa a capa. Prueba con estas..." },
-        { id:3, name:"Cimientos", seq:[2,1,1,3,4], desc:"A veces se suceden las capas. Las inferiores son las más antiguas y soportan todo el peso de la historia." },
+        { id:3, name:"Cimientos", seq:[2,1,1,3,4], desc:"Puede que a veces necesites apoyo visual. Pulsa en el OBJETIVO para comparar tu progreso ;)" },
         { id:4, name:"Emparedado", seq:[1,4,4,1], desc:"Cuando el mar sube y baja, cambia el tipo de arena o roca que se deposita, generando patrones caprichosos" },
         
         { id:5, name:"Primera Erosión", seq:[3,1,2,5], desc:"¡La goma de borrar de la naturaleza! El viento y el agua han desgastado la superficie." },
@@ -399,7 +458,7 @@
         { id:42, name:"Caos Primordial", seq:[4,3,8,6,5,2,1,7], desc:"La prueba final. Si puedes desenredar este nudo geológico, ¡te has ganado el título!" }
     ];
 
-    let grid=[], targetGrid=[], history=[], userSeq=[], skyOff=0, undoCount=0;
+    let grid=[], targetGrid=[], overlayGrid=[], history=[], userSeq=[], skyOff=0, undoCount=0;
     let currentLvl=0, maxLvl = parseInt(localStorage.getItem('maxLvl'))||0;
     let starsData = JSON.parse(localStorage.getItem('starsData'))||{};
     let isPlayground = false;
@@ -415,6 +474,24 @@
                 if(sy<sH && sx<sW){
                     const id=g[sy][sx]; let rgb=SCHEMATIC_COLORS[id]||[0,0,0];
                     const i=(y*targetW+x)*4; px[i]=rgb[0]; px[i+1]=rgb[1]; px[i+2]=rgb[2]; px[i+3]=255;
+                }
+            }
+        }
+        ctx.putImageData(img,0,0);
+    }
+
+    function drawOverlaySchematic(g, ctx, targetW, targetH) {
+        ctx.clearRect(0,0,targetW,targetH);
+        const img = ctx.createImageData(targetW, targetH); const px=img.data;
+        const sH=g.length; const sW=g[0].length;
+        for(let y=0;y<targetH;y++){
+            for(let x=0;x<targetW;x++){
+                const sy=Math.floor(y*(sH/targetH)); const sx=Math.floor(x*(sW/targetW));
+                if(sy<sH && sx<sW){
+                    const id=g[sy][sx];
+                    let alpha = (id === 0) ? 0 : 255; 
+                    let rgb=SCHEMATIC_COLORS[id]||[0,0,0];
+                    const i=(y*targetW+x)*4; px[i]=rgb[0]; px[i+1]=rgb[1]; px[i+2]=rgb[2]; px[i+3]=alpha;
                 }
             }
         }
@@ -505,7 +582,7 @@
         const box = document.getElementById('info-box');
         let msg = "";
         
-        if(lvl === 1) msg = "¡Te doy la bienvenida! Deposita capas de roca sedimentaria empezando por arenisca, luego pizarra y después caliza como te pide a la izquierda";
+        if(lvl === 1) msg = "¡Te doy la bienvenida! Deposita capas de roca sedimentaria empezando por arenisca, luego pizarra y después caliza como te pide a izquierda";
         else if(lvl === 5) msg = "¡NUEVA HERRAMIENTA!<br><strong>Erosión:</strong> Desgasta la superficie. ¡La goma de borrar de la naturaleza! :)";
         else if(lvl === 11) msg = "¡NUEVA HERRAMIENTA!<br><strong>Pliegue:</strong> Dobla las capas por presión. ¡Hasta la roca más dura se doblega!";
         else if(lvl === 19) msg = "¡NUEVA HERRAMIENTA!<br><strong>Falla:</strong> Rompe y desplaza la tierra. ahora que hay fallas, evita fallar tú ;)";
@@ -533,6 +610,9 @@
         document.getElementById('msg').innerText="";
         document.getElementById('level-num').innerText="";
         document.getElementById('level-title').innerText="MODO CREATIVO";
+        
+        document.getElementById('targetBtn').classList.add('disabled');
+        
         resetLevel(); updateUI(0); drawSchematic(grid, ctxT, TW, TH); showScreen('game');
     }
 
@@ -541,8 +621,19 @@
         document.getElementById('msg').innerText="";
         document.getElementById('level-num').innerText="NIVEL "+LEVELS[i].id;
         document.getElementById('level-title').innerText=LEVELS[i].name;
+        
+        document.getElementById('targetBtn').classList.remove('disabled');
+        
         updateUI(i); 
-        targetGrid=initGrid(TW,TH); LEVELS[i].seq.forEach(a=>action(a,targetGrid,TW,TH)); 
+        
+        targetGrid=initGrid(TW,TH); 
+        overlayGrid=initGrid(W,H);  
+        
+        LEVELS[i].seq.forEach(a => {
+            action(a, targetGrid, TW, TH);
+            action(a, overlayGrid, W, H);
+        });
+        
         drawSchematic(targetGrid,ctxT,TW,TH);
         resetLevel();
     }
@@ -586,6 +677,25 @@
         } else { fb.style.color = "red"; fb.innerText = "Código incorrecto."; }
         setTimeout(() => { fb.innerText = ""; }, 2000);
     }
+
+    function showOverlay() {
+        if (isPlayground) return;
+        if(targetGrid.length > 0) {
+            drawOverlaySchematic(overlayGrid, ctxO, W, H);
+            overlayCanvas.classList.add('visible');
+        }
+    }
+    function hideOverlay() {
+        overlayCanvas.classList.remove('visible');
+    }
+
+    const targetBtn = document.getElementById('targetBtn');
+    targetBtn.addEventListener('mousedown', showOverlay);
+    targetBtn.addEventListener('touchstart', (e) => { e.preventDefault(); showOverlay(); });
+    targetBtn.addEventListener('mouseup', hideOverlay);
+    targetBtn.addEventListener('mouseleave', hideOverlay);
+    targetBtn.addEventListener('touchend', hideOverlay);
+
 
     function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById('screen-'+id).classList.add('active'); }
     function showMenu(){ showScreen('menu'); } function showLevels(){ renderLevels(); showScreen('levels'); } function showHelp(){ showScreen('help'); } function continueGame(){ loadLevel(maxLvl); showScreen('game'); }
@@ -689,6 +799,43 @@
 	}
 	// ]]>
 </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
-
