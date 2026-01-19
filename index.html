@@ -1,226 +1,693 @@
-<style>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GEO-LOGIC: Mobile Only (v101)</title>
+    <style>
         /* --- ESTILOS GENERALES --- */
         :root { 
             --bg-color: #F0F4F8; 
             --accent-color: #1a3c3c; 
             --text-color: #333;
-            --shadow: 0 4px 8px rgba(0,0,0,0.25);
+            --shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
-        /* 1. BLOQUEO TOTAL (ESTILO APP) */
+        /* BLOQUEO DE PANTALLA (APP STYLE) */
         html, body {
-            width: 100%; 
-            height: 100%; 
-            margin: 0; 
-            padding: 0;
-            overflow: hidden;           /* Sin scroll */
-            position: fixed;            /* Clavado a la pantalla */
-            overscroll-behavior: none;  /* Sin rebote */
-            touch-action: none;         /* Sin gestos */
+            width: 100%; height: 100%; margin: 0; padding: 0;
+            overflow: hidden; position: fixed; overscroll-behavior: none; touch-action: none;
         }
 
-        /* 2. EL FONDO */
         body { 
-            /* Color de respaldo (Blanco suave) por si la imagen falla */
             background-color: var(--bg-color); 
-            
-            /* --- ASEGÚRATE QUE EL NOMBRE COINCIDA EXACTAMENTE CON TU ARCHIVO --- */
             background-image: url('img/fondo.jpg'); 
-            /* ------------------------------------------------------------------ */
-            
-            background-repeat: repeat; 
-            background-size: 300px; 
-            background-position: center;
-            
-            color: var(--text-color); 
-            font-family: 'Segoe UI', 'Roboto', sans-serif; 
-            
-            /* IMPORTANTE: block para que el fixed funcione bien */
-            display: block; 
-            
-            user-select: none; 
-            -webkit-tap-highlight-color: transparent;
+            background-repeat: repeat; background-size: 300px; background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color); font-family: 'Segoe UI', 'Roboto', sans-serif; 
+            display: flex; flex-direction: column; align-items: center; 
+            user-select: none; -webkit-tap-highlight-color: transparent;
         }
         
-        /* 3. CAPA DE INTERFAZ (CRISTAL) */
+        /* CAPA CRISTAL (CONTENEDOR PRINCIPAL) */
         .screen { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            
-            /* Transparencia (0.4) y desenfoque para ver el fondo */
-            background: rgba(240, 244, 248, 0.4); 
-            backdrop-filter: blur(3px); 
-            
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            background: rgba(240, 244, 248, 0.5); backdrop-filter: blur(0px);            
             transition: opacity 0.3s; opacity: 0; pointer-events: none; z-index: 0; 
         }
-        .screen.active { opacity: 1; pointer-events: all; z-index: 10; }
+        .screen.active {opacity: 1;pointer-events: all;z-index: 10;}
 
-        /* --- RESTO DE ELEMENTOS --- */
-        .main-logo { max-width: 85%; width: 450px; margin-bottom: 1.5rem; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.3)); }
+        /* --- MENÚ --- */
+        .main-logo { max-width: 85%; width: 280px; margin-bottom: 1.5rem; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.15)); }
         
         .menu-btn { 
             width: 240px; padding: 15px; margin: 6px; 
             background: var(--accent-color); color: white; 
-            border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; 
+            border: none; border-radius: 30px; font-size: 1.1rem; font-weight: bold; 
             text-transform: uppercase; cursor: pointer; box-shadow: var(--shadow);
-            border: 2px solid rgba(255,255,255,0.3);
-            touch-action: manipulation;
+            border: 2px solid rgba(255,255,255,0.3); touch-action: manipulation;
         }
         .menu-btn:active { transform: translateY(2px); }
         .menu-btn.secondary { background: #555; font-size: 0.9rem; }
-        .menu-btn.creative { background: #d35400; font-size: 0.95rem; margin-bottom: 20px; }
+        .menu-btn.creative { background: #d35400; font-size: 0.95rem; margin-bottom: 7px; }
 
-        /* NIVELES */
+        /* --- NIVELES --- */
         .levels-container { 
-            width: 90%; max-width: 600px; max-height: 70vh; 
-            overflow-y: auto; touch-action: pan-y; 
-            padding: 15px; 
-            /* Fondo blanco semitransparente para leer bien los niveles */
-            background: rgba(255, 255, 255, 0.8); 
-            border-radius: 15px; box-shadow: var(--shadow);
+            width: 90%; max-width: 320px; max-height: 60vh; 
+            overflow-y: auto; touch-action: pan-y; padding: 10px; 
+            background: rgba(255, 255, 255, 0.85); border-radius: 15px; box-shadow: var(--shadow);
         }
-        .levels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; justify-items: center; }
+        .levels-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; justify-items: center; }
         .level-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.1s; touch-action: manipulation; }
         .level-card:active { transform: scale(0.95); }
-        
-        .level-box { 
-            width: 70px; height: 70px; background: #ddd; border-radius: 10px; 
-            overflow: hidden; border: 3px solid white; box-shadow: var(--shadow);
-            display: flex; align-items: center; justify-content: center;
-            position: relative;
-        }
+        .level-box { width: 60px; height: 60px; background: #ddd; border-radius: 10px; overflow: hidden; border: 3px solid white; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; position: relative; }
         .level-box canvas { width: 100%; height: 100%; image-rendering: pixelated; }
         .level-card.locked { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
-        .stars { font-size: 14px; margin-top: 5px; color: #FFD700; text-shadow: 0 1px 2px rgba(0,0,0,0.8); height: 20px; letter-spacing: 1px; font-weight: bold; }
+        .stars { font-size: 12px; margin-top: 3px; color: #FFD700; text-shadow: 0 1px 1px rgba(0,0,0,0.2); height: 15px; letter-spacing: 1px; }
 
-        /* JUEGO */
+        /* INPUT CÓDIGO */
+        .code-bar { display: flex; gap: 5px; width: 90%; max-width: 320px; margin-bottom: 10px; align-items: center; justify-content: center; }
+        .code-input { flex-grow: 1; padding: 10px; border-radius: 8px; border: 2px solid #ccc; font-family: 'Segoe UI', sans-serif; font-weight: bold; text-align: center; letter-spacing: 3px; font-size: 1rem; color: var(--accent-color); outline: none; background: rgba(255,255,255,0.9); }
+        .code-input:focus { border-color: var(--accent-color); }
+        .btn-code { padding: 10px 15px; background: #555; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.2); }
+        .btn-code:active { transform: translateY(2px); box-shadow: none; }
+        #code-feedback { font-size: 0.75rem; font-weight: bold; margin-bottom: 10px; height: 15px; text-shadow: 0 1px 2px white; }
+
+        /* --- JUEGO (LAYOUT MÓVIL ESTÁTICO) --- */
         #game-layout {
             display: flex; flex-direction: column; align-items: center; 
-            width: 100%; height: 100%; padding-top: 10px;
-            max-width: 600px; 
+            width: 100%; height: 100%; padding-top: 5px;
+            max-width: 320px; /* Limitamos el ancho para que parezca móvil en PC */
         }
 
-        .header-bar { 
-            display: grid; grid-template-columns: 70px 1fr 70px; 
-            width: 95%; margin-bottom: 10px; align-items: center; 
-            background: rgba(255,255,255,0.85); 
-            padding: 5px; border-radius: 30px; box-shadow: var(--shadow);
+        .header-bar {
+            display: grid;
+            grid-template-columns: 69px 1fr 11px;
+            width: 95%;
+            margin-bottom: 5px;
+            align-items: anchor-center;
+            justify-items: end;
         }
-        .back-btn-game { 
-            background: #555; color: white; border: none; padding: 6px 10px; 
-            border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.7rem; 
-            box-shadow: none; justify-self: start; touch-action: manipulation;
+        .back-btn-game {
+            background: #555;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.65rem;
+            box-shadow: var(--shadow);
+            /* justify-self: start; */
+            touch-action: manipulation;
         }
-        .title-group { text-align: center; }
-        #level-num { font-size: 0.75rem; color: #777; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        #level-title { margin: 0; font-size: 1.3rem; color: var(--accent-color); font-weight: 900; line-height: 1; text-shadow: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+        .title-group {text-align: right;}
+        #level-num { font-size: 0.65rem; color: #777; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        #level-title { margin: -3px 0 0 0; font-size: 1.1rem; color: var(--accent-color); font-weight: 900; line-height: 1.2; text-shadow: 0 1px 0 rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
 
+        /* ZONA CENTRAL (Siempre vertical) */
         .main-stage {
-            display: flex; flex-direction: row; justify-content: center; align-items: flex-start;
-            gap: 20px; width: 98%; margin-bottom: 5px;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 5px; width: 100%; margin-bottom: 5px;
         }
-        .left-panel { display: flex; flex-direction: column; align-items: center; width: 160px; }
+        
+        /* PANEL SUPERIOR (Objetivo + Info) */
+        .left-panel {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            gap: 0;
+            margin-bottom: 5px;
+        }
         
         .target-wrapper {
-            background: rgba(255,255,255,0.9); padding: 5px; border-radius: 10px; 
-            box-shadow: var(--shadow); margin-bottom: 15px;
-            display: flex; flex-direction: column; align-items: center;
-            flex-shrink: 0;
+            background: white; padding: 3px; border-radius: 8px; 
+            box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center;
         }
-        /* Escritorio: 130px */
-        #targetCanvas { width: 130px; height: 130px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; }
-        .label-target { font-size: 0.65rem; color: #888; font-weight: bold; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        #targetCanvas { width: 90px; height: 90px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; border: 2px solid white; }
+        .label-target { font-size: 0.5rem; color: #888; font-weight: bold; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
 
         #info-box {
-            background-color: #0d2b2b; color: #ecf0f1; padding: 10px; width: 100%; border-radius: 8px; 
-            text-align: center; font-size: 0.8rem; line-height: 1.3; box-shadow: var(--shadow); box-sizing: border-box;
-            opacity: 0; transition: opacity 0.3s; border-left: 4px solid #F4A460;
+            background-color: #0d2b2b;
+            color: #ecf0f1;
+            padding: 8px;
+            width: 154px;
+            height: 106px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.75rem;
+            line-height: 1.15;
+            box-shadow: var(--shadow);
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         #info-box.visible { opacity: 1; }
 
-        .right-panel { display: flex; flex-direction: column; align-items: center; }
-        #simCanvas { width: 340px; height: 340px; background: #BFEFFF; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.25); image-rendering: pixelated; touch-action: none; }
-        #msg { height: 20px; font-weight: 900; margin-top: 5px; color: white; text-align: center; font-size: 1rem; text-shadow: 0 2px 4px black; }
-
-        /* CONTROLES */
-        .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 95%; max-width: 500px; }
-        .tool-btn { 
-            aspect-ratio: 1; border-radius: 10px; border: none; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 0.6rem; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-            position: relative; overflow: hidden; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
-            transition: transform 0.1s, box-shadow 0.1s; background-color: #888;
-            border: 2px solid white; touch-action: manipulation;
+        .right-panel { display: flex; flex-direction: column; align-items: center; padding-bottom: 5px; }
+        
+        #simCanvas { 
+            width: 280px; height: 280px; 
+            background: #BFEFFF; image-rendering: pixelated; 
+            border: 3px solid white; border-radius: 12px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            touch-action: none; 
         }
-        .tool-btn:active { transform: translateY(3px); box-shadow: none; }
+        #msg { height: 18px; font-weight: 900; margin-top: 4px; color: var(--accent-color); text-align: center; font-size: 0.9rem; text-shadow: 0 1px 0 white; }
+
+        /* CONTROLES (Compactos) */
+        .controls-grid { 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; 
+            width: 95%; max-width: 280px; 
+        }
+        .tool-btn { 
+            aspect-ratio: 1; border-radius: 8px; 
+            border: 2px solid rgba(39, 39, 39, 0.4); 
+            cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 0.55rem; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+            position: relative; overflow: hidden; box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+            transition: transform 0.1s, box-shadow 0.1s; background-color: #888;
+            touch-action: manipulation;
+        }
+        .tool-btn:active { transform: translateY(2px); box-shadow: none; }
         .btn-tex { position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.9; z-index: 0; background-size: cover; background-position: center; }
-        .btn-label { position: relative; z-index: 2; margin-top: auto; padding-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.6rem; }
-        .btn-icon-locked { font-size: 1.5rem; opacity: 0.4; z-index: 2; position: relative; }
+        .btn-label { position: relative; z-index: 2; margin-top: auto; padding-bottom: 2px; text-transform: uppercase; letter-spacing: 0; font-size: 0.5rem; }
+        .btn-icon-locked { font-size: 1.2rem; opacity: 0.4; z-index: 2; position: relative; }
         .btn-grey { background-color: #666; } 
-        .btn-sys { grid-column: span 2; height: 40px; aspect-ratio: auto; background-color: #444; font-size: 0.8rem; letter-spacing: 1px; border: 2px solid white; touch-action: manipulation;}
-        .btn-check { grid-column: span 4; height: 45px; aspect-ratio: auto; background-color: var(--accent-color); font-size: 1rem; margin-top: 2px; border: 2px solid white; touch-action: manipulation;}
+        .btn-sys { grid-column: span 2; height: 35px; aspect-ratio: auto; background-color: #444; font-size: 0.7rem; letter-spacing: 1px; }
+        .btn-check { grid-column: span 4; height: 40px; aspect-ratio: auto; background-color: var(--accent-color); font-size: 0.9rem; margin-top: 2px; }
 
         /* AYUDA */
-        .help-wrapper { background: white; padding: 0; border-radius: 15px; max-width: 550px; width: 95%; height: 80vh; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; }
-        .help-header { background: var(--accent-color); color: white; padding: 20px; text-align: center; flex-shrink: 0; }
-        .help-header h2 { margin: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; }
-        .help-body { padding: 25px; overflow-y: auto; flex-grow: 1; touch-action: pan-y; }
-        .help-section { margin-bottom: 25px; }
-        .help-title { color: var(--accent-color); border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 10px; font-size: 1.1rem; }
-        .help-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .help-wrapper { background: white; padding: 0; border-radius: 15px; max-width: 320px; width: 95%; height: 80vh; box-shadow: 0 20px 60px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; }
+        .help-header { background: var(--accent-color); color: white; padding: 15px; text-align: center; flex-shrink: 0; }
+        .help-header h2 { margin: 0; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; }
+        .help-body { padding: 20px; overflow-y: auto; flex-grow: 1; touch-action: pan-y; }
+        .help-section { margin-bottom: 20px; }
+        .help-title { color: var(--accent-color); border-bottom: 2px solid #eee; padding-bottom: 5px; margin-bottom: 10px; font-size: 1rem; }
+        .help-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .help-item-box { background: #f8f9fa; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid #eee; }
-        .help-icon { font-size: 2rem; margin-bottom: 5px; }
-        .help-text strong { display: block; color: #333; font-size: 0.9rem; margin-bottom: 3px; }
-        .help-text p { margin: 0; color: #666; font-size: 0.8rem; line-height: 1.3; }
-        .help-rule { background: #eef5f5; border-left: 4px solid var(--accent-color); padding: 10px 15px; margin-bottom: 10px; font-size: 0.9rem; color: #444; }
+        .help-icon { font-size: 1.5rem; margin-bottom: 5px; }
+        .help-text strong { display: block; color: #333; font-size: 0.8rem; margin-bottom: 3px; }
+        .help-text p { margin: 0; color: #666; font-size: 0.7rem; line-height: 1.3; }
+        .help-rule { background: #eef5f5; border-left: 4px solid var(--accent-color); padding: 10px; margin-bottom: 10px; font-size: 0.8rem; color: #444; }
         .help-footer { padding: 15px; background: #eee; text-align: center; flex-shrink: 0; }
-
-        /* --- OPTIMIZACIÓN MÓVIL --- */
-        @media (max-width: 600px) {
-            .header-bar { margin-bottom: 2px; padding: 3px; }
-            #level-title { font-size: 1rem; }
-            
-            .main-stage { flex-direction: column; align-items: center; gap: 2px; margin-bottom: 2px; }
-            
-            .left-panel { 
-                flex-direction: row; 
-                justify-content: space-between; 
-                align-items: center;
-                gap: 8px; 
-                margin-bottom: 2px;
-                width: 260px; 
-            }
-            
-            /* Objetivo MUY pequeño (70px) */
-            .target-wrapper { margin-bottom: 0; padding: 2px; }
-            #targetCanvas { width: 75px; height: 75px; }
-            .label-target { font-size: 0.45rem; margin-top: 1px; }
-            
-            /* Info box compacta y elástica */
-            #info-box { 
-                width: auto; flex-grow: 1; height: 100%; 
-                font-size: 0.65rem; padding: 5px; line-height: 1.2; 
-                display: flex; align-items: center; justify-content: center;
-            }
-            
-            /* Lienzo principal */
-            #simCanvas { width: 220px; height: 220px; } 
-            #msg { height: 15px; font-size: 0.8rem; margin-top: 2px; }
-
-            /* Controles */
-            .controls-grid { 
-                gap: 5px; width: 90%; max-width: 280px; 
-            }
-            .tool-btn { border-radius: 6px; box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
-            .tool-btn:active { transform: translateY(2px); }
-            .btn-label { font-size: 0.5rem; padding-bottom: 2px; letter-spacing: 0; }
-            .btn-icon-locked { font-size: 1.2rem; }
-            
-            .btn-sys { height: 30px; font-size: 0.65rem; }
-            .btn-check { height: 35px; font-size: 0.85rem; margin-top: 2px; }
-        }
     </style>
+</head>
+<body>
+
+    <div id="screen-menu" class="screen active">
+        <img src="img/geologic.png" alt="GEO-LOGIC" class="main-logo">
+        <button class="menu-btn" onclick="continueGame()">JUGAR</button>
+        <button class="menu-btn secondary" onclick="showLevels()">NIVELES</button>
+        <button class="menu-btn creative" onclick="enterPlayground()">PLAYGROUND</button>
+        <button class="menu-btn secondary" onclick="showHelp()">AYUDA</button>
+        <div style="margin-top:10px; color:#333; font-weight:bold; font-size:0.7rem; text-shadow:0 0 5px white;" id="loading-text">Cargando...</div>
+    </div>
+
+    <div id="screen-levels" class="screen">
+        <div style="width:90%; max-width:320px; display:flex; align-items:center; margin-bottom:10px; background:rgba(255,255,255,0.9); padding:10px; border-radius:10px;">
+            <button class="back-btn-game" onclick="showMenu()">« MENÚ</button>
+            <h2 style="flex-grow:1; text-align:center; margin:0; color:var(--accent-color); font-size:1.2rem;">NIVELES</h2>
+            <div style="width:50px;"></div>
+        </div>
+
+        <div class="code-bar">
+            <input type="text" inputmode="numeric" id="level-code-input" class="code-input" placeholder="CÓDIGO">
+            <button class="btn-code" onclick="unlockWithCode()">OK</button>
+        </div>
+        <div id="code-feedback"></div>
+
+        <div class="levels-container">
+            <div id="levels-grid" class="levels-grid"></div>
+        </div>
+    </div>
+
+    <div id="screen-game" class="screen">
+        <div id="game-layout">
+            <div class="header-bar">
+                <button class="back-btn-game" onclick="showMenu()">« MENÚ</button>
+                <div class="title-group"><div id="level-num">NIVEL 1</div><h3 id="level-title">...</h3></div>
+                <div></div>
+            </div>
+
+            <div class="main-stage">
+                <div class="left-panel">
+                    <div class="target-wrapper">
+                        <canvas id="targetCanvas" width="90" height="90"></canvas>
+                        <div class="label-target">OBJETIVO</div>
+                    </div>
+                    <div id="info-box"></div>
+                </div>
+                <div class="right-panel">
+                    <canvas id="simCanvas" width="280" height="280"></canvas>
+                    <div id="msg"></div>
+                </div>
+            </div>
+
+            <div class="controls-grid">
+                <button class="tool-btn" onclick="action(1)"><div class="btn-tex" style="background-image:url('img/arenisca.jpg'); background-color:#F4A460"></div><span class="btn-label">ARENISCA</span></button>
+                <button class="tool-btn" onclick="action(2)"><div class="btn-tex" style="background-image:url('img/Pizarra.jpg'); background-color:#708090"></div><span class="btn-label">PIZARRA</span></button>
+                <button class="tool-btn" onclick="action(3)"><div class="btn-tex" style="background-image:url('img/caliza.jpg'); background-color:#F0E68C"></div><span class="btn-label">CALIZA</span></button>
+                <button class="tool-btn" onclick="action(4)"><div class="btn-tex" style="background-image:url('img/Conglomerado.jpg'); background-color:#8B4513"></div><span class="btn-label">CONGLOM.</span></button>
+
+                <button class="tool-btn btn-grey" id="btn-erosion" onclick="action(5)" data-label="EROSIÓN" data-img="EROSION.jpg"><div class="btn-tex" style="background-image:url('img/EROSION.jpg');"></div><span class="btn-label">EROSIÓN</span></button>
+                <button class="tool-btn btn-grey" id="btn-fold" onclick="action(6)" data-label="PLIEGUE" data-img="PLIEGUE.jpg"><div class="btn-tex" style="background-image:url('img/PLIEGUE.jpg');"></div><span class="btn-label">PLIEGUE</span></button>
+                <button class="tool-btn btn-grey" id="btn-fault" onclick="action(7)" data-label="FALLA" data-img="FALLA.jpg"><div class="btn-tex" style="background-image:url('img/FALLA.jpg');"></div><span class="btn-label">FALLA</span></button>
+                <button class="tool-btn btn-grey" id="btn-intrusion" onclick="action(8)" data-label="INTRUSION" data-img="INTRUSION.jpg"><div class="btn-tex" style="background-image:url('img/INTRUSION.jpg');"></div><span class="btn-label">INTRUSION</span></button>
+
+                <button class="tool-btn btn-sys" onclick="undo()">DESHACER</button>
+                <button class="tool-btn btn-sys" onclick="resetLevel()">LIMPIAR</button>
+                <button class="tool-btn btn-check" id="btn-check" onclick="check()">COMPROBAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-help" class="screen">
+        <div class="help-wrapper">
+            <div class="help-header"><h2>Manual de Campo</h2></div>
+            <div class="help-body">
+                <div class="help-section">
+                    <h3 class="help-title">🎯 El Objetivo</h3>
+                    <p style="color:#555">Tu misión es observar el corte geológico del recuadro pequeño y <strong>replicar su historia</strong> paso a paso en el lienzo grande.</p>
+                </div>
+                
+                <div class="help-section">
+                    <h3 class="help-title">⭐ Puntuación</h3>
+                    <div style="background:#f8f9fa; padding:10px; border-radius:8px; border:1px solid #eee;">
+                        <div style="display:flex; align-items:center; margin-bottom:5px;">
+                            <span style="color:#FFD700; margin-right:10px; font-size:1.2rem;">★★★</span>
+                            <span style="font-size:0.9rem; color:#444;"><strong>Perfecto:</strong> Sin errores.</span>
+                        </div>
+                        <div style="display:flex; align-items:center; margin-bottom:5px;">
+                            <span style="color:#FFD700; margin-right:10px; font-size:1.2rem;">★★</span>
+                            <span style="font-size:0.9rem; color:#444;"><strong>Casi:</strong> 1 corrección (Deshacer).</span>
+                        </div>
+                        <div style="display:flex; align-items:center;">
+                            <span style="color:#FFD700; margin-right:10px; font-size:1.2rem;">★</span>
+                            <span style="font-size:0.9rem; color:#444;"><strong>Bien:</strong> Varios errores.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="help-section">
+                    <h3 class="help-title">📜 Reglas de Oro</h3>
+                    <div class="help-rule"><strong>1. Superposición:</strong> Las capas nuevas siempre se depositan encima de las antiguas.</div>
+                    <div class="help-rule"><strong>2. Corte y Cruce:</strong> Si una falla o intrusión corta una capa, ocurrió <em>después</em> de esa capa.</div>
+                </div>
+                <div class="help-section">
+                    <h3 class="help-title">🛠️ Herramientas</h3>
+                    <div class="help-grid">
+                        <div class="help-item-box"><div class="help-icon">🧱</div><div class="help-text"><strong>Sedimentación</strong>Deposita rocas en capas horizontales.</div></div>
+                        <div class="help-item-box"><div class="help-icon">🌧️</div><div class="help-text"><strong>Erosión</strong>Desgasta la superficie hasta dejarla plana.</div></div>
+                        <div class="help-item-box"><div class="help-icon">〰️</div><div class="help-text"><strong>Tectónica</strong>Pliegues y Fallas que deforman la roca.</div></div>
+                        <div class="help-item-box"><div class="help-icon">🌋</div><div class="help-text"><strong>Magmatismo</strong>Intrusiones de roca fundida.</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="help-footer">
+                <button class="menu-btn secondary" style="width:100%; margin:0;" onclick="showMenu()">ENTENDIDO</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    try { if(!sessionStorage.getItem('v101_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v101_clean','true'); } } catch(e){}
+
+    // DIMENSIONES NATIVAS MÓVILES (280px)
+    const W = 280, H = 280; 
+    const TW = 90, TH = 90; // Objetivo de 90px para que encaje
+    const ctxP = document.getElementById('simCanvas').getContext('2d');
+    const ctxT = document.getElementById('targetCanvas').getContext('2d');
+    
+    const textureFiles = { 
+        0:'img/Cielo.jpg', 
+        1:'img/arenisca.jpg', 
+        2:'img/Pizarra.jpg', 
+        3:'img/caliza.jpg',        
+        4:'img/Conglomerado.jpg',  
+        8:'img/magma.jpg', 
+        9:'img/basament.jpg' 
+    };
+    let textures = {}, loadedCount = 0;
+    for(let id in textureFiles){
+        let i = new Image(); i.src=textureFiles[id]; i.crossOrigin="Anonymous";
+        i.onload = ()=>{ 
+            let c=document.createElement('canvas'); c.width=i.width; c.height=i.height; 
+            c.getContext('2d').drawImage(i,0,0);
+            try { textures[id]={data:c.getContext('2d').getImageData(0,0,i.width,i.height).data, w:i.width, h:i.height}; loadedCount++; 
+            if(loadedCount>=5) document.getElementById('loading-text').innerText=""; } catch(e){}
+        };
+    }
+
+    const SCHEMATIC_COLORS = { 0:[153,208,223], 1:[221,189,137], 2:[70,76,82], 3:[226,226,226], 4:[100,73,43], 8:[220,85,40], 9:[19,36,37] };
+    const COLORS = { 0:[191,239,255], 9:[47,79,79], 1:[244,164,96], 2:[112,128,144], 3:[240,230,140], 4:[139,69,19], 8:[220,85,40] };
+
+    const LEVELS = [
+        { id:1, name:"Principios Básicos", seq:[1,2,3], desc:"Como hacer una lasaña: la capa que está abajo del todo es la que pusiste primero." },
+        { id:2, name:"Torre Sedimentaria", seq:[3,2,1,4,3,2], desc:"La historia de la Tierra se escribe página a página, o mejor dicho, capa a capa. Prueba con estas..." },
+        { id:3, name:"Cimientos", seq:[2,1,1,3,4], desc:"A veces se suceden las capas. Las inferiores son las más antiguas y soportan todo el peso de la historia." },
+        { id:4, name:"Emparedado", seq:[1,4,4,1], desc:"Cuando el mar sube y baja, cambia el tipo de arena o roca que se deposita, generando patrones caprichosos" },
+        
+        { id:5, name:"Primera Erosión", seq:[3,1,2,5], desc:"¡La goma de borrar de la naturaleza! El viento y el agua han desgastado la superficie." },
+        { id:6, name:"Discordancia", seq:[4,5,1,3], desc:"¿Ves esa línea ondulada? Faltan páginas en el libro de historia; fueron borradas por la erosión." },
+        { id:7, name:"Valles y Cumbres", seq:[5,3,2,1,5,4], desc:"La erosión no es igual para todos: las rocas blandas se desgastan rápido y forman valles." },
+        { id:8, name:"Desgaste Total", seq:[5,3,5,2,5,1,5,4,5], desc:"Si le das suficiente tiempo, la naturaleza lo aplana todo hasta dejarlo como una mesa." },
+        { id:9, name:"El Gran Cañón", seq:[3,2,5,5,5,1], desc:"A veces no solo basta con una erosión. La erosion puede repetirse en el tiempo 2... 3 veces..." },
+        { id:10, name:"Paleorrelieve", seq:[4,3,5,5,2,5,1,1], desc:"Enterramos unas antiguas colinas bajo tierra nueva. ¡Un paisaje oculto en el subsuelo!" },
+        
+        { id:11, name:"Fuerzas Compresivas", seq:[1,2,3,6], desc:"Imagina empujar una alfombra contra la pared. ¡La roca sólida también se arruga si aprietas fuerte!" },
+        { id:12, name:"Base Ondulada", seq:[6,1,2,3], desc:"Al depositar arena sobre un suelo arrugado, primero se rellenan los huecos." },
+        { id:13, name:"Sinclinal Oculto", seq:[1,3,6,4,2], desc:"Un pliegue en forma de 'U' (Sinclinal). Las rocas más jóvenes quedan protegidas en el centro." },
+        { id:14, name:"Orogénesis", seq:[3,4,6,1,2,6], desc:"¡Así nacen las montañas! Fuerzas titánicas doblan la corteza y la empujan hacia el cielo." },
+        { id:15, name:"Anticlinal Erosionado", seq:[3,4,5,5,6], desc:"Un pliegue tipo arco (Anticlinal). Si le cortas la 'cabeza', ves el corazón antiguo de la montaña." },
+        { id:16, name:"Tectónica Activa", seq:[1,3,5,5,6,4], desc:"Un ciclo completo: depositar, doblar, borrar y volver a depositar. La Tierra nunca descansa." },
+        { id:17, name:"Discordancia Angular", seq:[2,1,6,5,4], desc:"Capas planas durmiendo sobre capas dobladas. ¡Aquí hubo un gran cataclismo en el pasado!" },
+        { id:18, name:"Caos Tectónico", seq:[3,2,6,5,5,1,6,4], desc:"Doblar, romper, erosionar... A veces la historia es un rompecabezas difícil de leer." },
+        
+        { id:19, name:"Ruptura", seq:[1,2,3,7], desc:"¡CRACK! La roca no aguantó más presión y se partió. Fíjate cómo un lado se deslizó." },
+        { id:20, name:"Falla Activa", seq:[1,2,3,7,4], desc:"Después de romperse, la vida sigue. Nuevas capas cubren la vieja cicatriz." },
+        { id:21, name:"Trampa Petrolífera", seq:[1,3,4,6,7], desc:"El petróleo suele quedar atrapado en estas 'trampas' donde la roca se dobla y rompe." },
+        { id:22, name:"Bloque Elevado", seq:[1,4,2,5,7], desc:"Dos fallas pueden empujar un bloque hacia arriba, creando una meseta cuadrada." },
+        { id:23, name:"Graben", seq:[4,3,2,7,5], desc:"O al revés: el suelo se hunde entre dos grietas formando una fosa o 'Graben'." },
+        { id:24, name:"Historia Rota", seq:[1,5,5,2,3,7], desc:"La falla ha puesto frente a frente a rocas que son 'abuelas' con rocas 'nietas'." },
+        { id:25, name:"Sistema de Fallas", seq:[4,2,3,7,1,7], desc:"Como un parabrisas roto, la tierra suele quebrarse por varios sitios a la vez." },
+        
+        { id:26, name:"El Dique", seq:[1,2,3,8], desc:"Roca fundida inyectada desde abajo cortando todo a su paso como un cuchillo." }, 
+        { id:27, name:"Volcán Dormido", seq:[4,3,2,8,5], desc:"¡Magma al ataque! Hubo un volcán aquí, pero la erosión se llevó el cono y solo dejó el tubo de alimentación." }, 
+        { id:28, name:"Inyección Reciente", seq:[1,2,5,3,8], desc:"Regla de oro: Si el magma corta a una roca, el magma llegó ÚLTIMO (es más joven)." }, 
+        { id:29, name:"Pliegue Cortado", seq:[1,2,6,8], desc:"Fíjate bien: el dique está recto. Eso significa que entró DESPUÉS de que la tierra se doblara." }, 
+        { id:30, name:"Dique Plegado", seq:[1,2,8,6], desc:"¡El dique está torcido! Primero entró el magma, y LUEGO la tierra se arrugó." }, 
+        { id:31, name:"Dique Fallado", seq:[3,4,8,7], desc:"La falla ha cortado al dique en dos. ¡Pobre dique, qué mala suerte!" }, 
+        { id:32, name:"Cicatriz Ígnea", seq:[3,4,7,8], desc:"El magma es perezoso: a veces aprovecha una falla vieja para colarse hacia arriba." }, 
+        { id:33, name:"Discordancia Magmática", seq:[1,2,8,5,4], desc:"Una antigua colada de lava que se enfrió, se erosionó y quedó enterrada." }, 
+        { id:34, name:"Intrusión Profunda", seq:[2,3,6,5,8,1], desc:"Una burbuja gigante de magma (Plutón) que se enfrió lentamente bajo tierra." }, 
+        { id:35, name:"Tectónica Ígnea", seq:[1,2,8,6,7], desc:"El magma caliente puede debilitar la roca y hacer que todo se rompa y doble más fácil." }, 
+        { id:36, name:"Doble Evento", seq:[4,8,5,1,8], desc:"Dos inyecciones de magma separadas por millones de años. ¿Cuál fue primero?" }, 
+        { id:37, name:"La Chimenea", seq:[2,6,5,3,7,8], desc:"Un complejo sistema de tuberías volcánicas deformado por el movimiento de la tierra." }, 
+        { id:38, name:"Bloque Magmático", seq:[1,2,8,5,7,5,5], desc:"La roca volcánica suele ser más dura y resiste mejor la erosión, quedando en resalte." }, 
+        { id:39, name:"Historia Completa", seq:[3,2,6,5,4,8,7], desc:"Sedimentar, doblar, erosionar, inyectar magma, romper... ¡Vaya día ajetreado!" }, 
+        { id:40, name:"El Gran Ciclo", seq:[1,2,3,6,5,7,8,5,4], desc:"El ciclo de las rocas: nada se pierde, todo se recicla, se funde o se erosiona." }, 
+        { id:41, name:"Tectónica Cruzada", seq:[2,3,6,5,1,8,7], desc:"Fuerzas que empujan y tiran en direcciones opuestas. Un rompecabezas 3D." }, 
+        { id:42, name:"Caos Primordial", seq:[4,3,8,6,5,2,1,7], desc:"La prueba final. Si puedes desenredar este nudo geológico, ¡te has ganado el título!" }
+    ];
+
+    let grid=[], targetGrid=[], history=[], userSeq=[], skyOff=0, undoCount=0;
+    let currentLvl=0, maxLvl = parseInt(localStorage.getItem('maxLvl'))||0;
+    let starsData = JSON.parse(localStorage.getItem('starsData'))||{};
+    let isPlayground = false;
+
+    function initGrid(w,h) { let g=[]; let bh=Math.floor(h*0.1); for(let y=0;y<h;y++){let r=[];for(let x=0;x<w;x++)r.push(y>h-bh?9:0);g.push(r);} return g; }
+    
+    function drawSchematic(g, ctx, targetW, targetH) {
+        const img = ctx.createImageData(targetW, targetH); const px=img.data;
+        const sH=g.length; const sW=g[0].length;
+        for(let y=0;y<targetH;y++){
+            for(let x=0;x<targetW;x++){
+                const sy=Math.floor(y*(sH/targetH)); const sx=Math.floor(x*(sW/targetW));
+                if(sy<sH && sx<sW){
+                    const id=g[sy][sx]; let rgb=SCHEMATIC_COLORS[id]||[0,0,0];
+                    const i=(y*targetW+x)*4; px[i]=rgb[0]; px[i+1]=rgb[1]; px[i+2]=rgb[2]; px[i+3]=255;
+                }
+            }
+        }
+        ctx.putImageData(img,0,0);
+    }
+
+    function drawTextured(g, ctx, w, h) {
+        const d = ctx.createImageData(w,h); const px=d.data;
+        for(let i=0; i<w*h; i++) {
+            let x=i%w, y=Math.floor(i/w); let id=g[y][x]; let rgb=COLORS[id]||[0,0,0];
+            if(id===0) {
+                if(textures[0]) { let t=textures[0], tx=Math.floor((x+skyOff)%t.w), ty=y%t.h, ti=(ty*t.w+tx)*4; rgb=[t.data[ti],t.data[ti+1],t.data[ti+2]]; } 
+                else rgb=SCHEMATIC_COLORS[0];
+            } else if(textures[id]) {
+                let t=textures[id], ti=((y%t.h)*t.w+(x%t.w))*4; rgb=[t.data[ti],t.data[ti+1],t.data[ti+2]];
+            } else rgb = COLORS[id] || [0,0,0];
+            
+            if(id!==0) { let e=false; if(x<w-1 && g[y][x+1]!==id)e=true; if(y<h-1 && g[y+1][x]!==id)e=true; if(e) rgb=[30,30,30]; }
+            px[i*4]=rgb[0]; px[i*4+1]=rgb[1]; px[i*4+2]=rgb[2]; px[i*4+3]=255;
+        }
+        ctx.putImageData(d,0,0);
+    }
+
+    function action(id, g=grid, w=W, h=H) {
+        if(g===grid) {
+            if(!isPlayground) {
+                let lvl = currentLvl + 1;
+                if(id===5 && lvl < 5) return;  
+                if(id===6 && lvl < 11) return; 
+                if(id===7 && lvl < 19) return; 
+                if(id===8 && lvl < 26) return; 
+            }
+            if(history.length>20) history.shift(); history.push({g:JSON.parse(JSON.stringify(grid)), s:[...userSeq]}); userSeq.push(id);
+        }
+
+        if(id<=4) { 
+            let top=h; for(let x=0;x<w;x++)for(let y=0;y<h;y++)if(g[y][x]!==0){if(y<top)top=y;break;}
+            let start=Math.max(0,top-Math.floor(h*0.15)); for(let y=start;y<h;y++)for(let x=0;x<w;x++)if(g[y][x]===0)g[y][x]=id;
+        } else if(id===8) { 
+            let thickness = 20;
+            for(let x=0; x<w; x++) {
+                for(let y=0; y<h; y++) {
+                    let cx = (w/2) - (h/2 - y) * 0.6; 
+                    if (Math.abs(x - cx) < thickness) {
+                        if (g[y][x] !== 0) g[y][x] = 8;
+                    }
+                }
+            }
+        } else if(id===7) { 
+            let t=JSON.parse(JSON.stringify(g));
+            let slipY = Math.floor(h * 0.10); let slipX = Math.round(slipY / -1.5);
+            for(let y=0; y<h; y++) {
+                for(let x=0; x<w; x++) {
+                    if (x > (y - h/2) / -1.5 + w/2) {
+                        let targetSY = y - slipY; let targetSX = x - slipX;
+                        let effectiveSX = Math.max(0, Math.min(w - 1, targetSX));
+                        let sourceVal;
+                        if (targetSY >= h) sourceVal = t[h - 1][effectiveSX];
+                        else if (targetSY < 0) sourceVal = t[0][effectiveSX];
+                        else sourceVal = t[targetSY][effectiveSX];
+                        g[y][x] = sourceVal;
+                    }
+                }
+            }
+        } else if(id===6) { 
+            let t=JSON.parse(JSON.stringify(g)), amp=Math.floor(h*0.08);
+            for(let x=0;x<w;x++) { 
+                let sh=Math.floor(Math.sin(x*0.025*(300/w))*amp); 
+                for(let y=0;y<h;y++) { let sy=y+sh; if (sy >= h) g[y][x] = t[h-1][x]; else g[y][x] = (sy>=0&&sy<h) ? t[sy][x] : 0; } 
+            }
+        } else if(id===5) { 
+            let p=h; for(let x=0;x<w;x++)for(let y=0;y<h;y++)if(g[y][x]!==0){if(y<p)p=y;break;}
+            let b=p+Math.floor(h*0.05); for(let x=0;x<w;x++){ let c=Math.floor(b+Math.sin(x*0.05)*3+Math.cos(x*0.13)*1.5); for(let y=0;y<c&&y<h;y++)g[y][x]=0; }
+        }
+        if(isPlayground && g===grid) drawSchematic(grid, ctxT, TW, TH);
+    }
+
+    function updateUI(lvlIndex) {
+        if(isPlayground) {
+            document.getElementById('info-box').innerHTML = "MODO LIBRE<br>Crea y experimenta sin límites.";
+            document.getElementById('info-box').classList.add('visible');
+            configureButton('btn-erosion', true); configureButton('btn-fold', true); configureButton('btn-fault', true); configureButton('btn-intrusion', true);
+            document.getElementById('btn-check').style.display = 'none';
+            return;
+        }
+        document.getElementById('btn-check').style.display = 'grid';
+        const lvl = lvlIndex + 1;
+        const box = document.getElementById('info-box');
+        let msg = "";
+        
+        if(lvl === 1) msg = "¡Te doy la bienvenida! Deposita capas de roca sedimentaria empezando por arenisca, luego pizarra y después caliza como te pide a la izquierda";
+        else if(lvl === 5) msg = "¡NUEVA HERRAMIENTA!<br><strong>Erosión:</strong> Desgasta la superficie. ¡La goma de borrar de la naturaleza! :)";
+        else if(lvl === 11) msg = "¡NUEVA HERRAMIENTA!<br><strong>Pliegue:</strong> Dobla las capas por presión. ¡Hasta la roca más dura se doblega!";
+        else if(lvl === 19) msg = "¡NUEVA HERRAMIENTA!<br><strong>Falla:</strong> Rompe y desplaza la tierra. ahora que hay fallas, evita fallar tú ;)";
+        else if(lvl === 26) msg = "¡NUEVA HERRAMIENTA!<br><strong>Intrusión:</strong> Magma que corta la roca. Una inyección de emoción y complejidad";
+        else msg = LEVELS[lvlIndex].desc || "Replica la secuencia.";
+
+        if(msg) { box.innerHTML = msg; box.classList.add('visible'); } else { box.classList.remove('visible'); }
+        configureButton('btn-erosion', lvl >= 5); configureButton('btn-fold', lvl >= 11); configureButton('btn-fault', lvl >= 19); configureButton('btn-intrusion', lvl >= 26);
+    }
+
+    function configureButton(id, unlocked) {
+        const btn = document.getElementById(id);
+        const label = btn.dataset.label; const imgFile = btn.dataset.img; 
+        if(unlocked) {
+            btn.style.pointerEvents = "all";
+            btn.innerHTML = `<div class="btn-tex" style="background-image:url('img/${imgFile}');"></div><span class="btn-label">${label}</span>`;
+        } else {
+            btn.innerHTML = `<span class="btn-icon-locked">?</span>`;
+            btn.style.pointerEvents = "none";
+        }
+    }
+
+    function enterPlayground() {
+        isPlayground = true; currentLvl = -1; history=[]; userSeq=[]; undoCount=0;
+        document.getElementById('msg').innerText="";
+        document.getElementById('level-num').innerText="";
+        document.getElementById('level-title').innerText="MODO CREATIVO";
+        resetLevel(); updateUI(0); drawSchematic(grid, ctxT, TW, TH); showScreen('game');
+    }
+
+    function loadLevel(i) {
+        isPlayground = false; currentLvl=i; history=[]; userSeq=[]; undoCount=0;
+        document.getElementById('msg').innerText="";
+        document.getElementById('level-num').innerText="NIVEL "+LEVELS[i].id;
+        document.getElementById('level-title').innerText=LEVELS[i].name;
+        updateUI(i); 
+        targetGrid=initGrid(TW,TH); LEVELS[i].seq.forEach(a=>action(a,targetGrid,TW,TH)); 
+        drawSchematic(targetGrid,ctxT,TW,TH);
+        resetLevel();
+    }
+
+    function resetLevel() { grid=initGrid(W,H); history=[]; userSeq=[]; undoCount=0; if(isPlayground) drawSchematic(grid, ctxT, TW, TH);}
+    
+    function undo() { 
+        if(history.length>0){ 
+            let s=history.pop(); grid=s.g; userSeq=s.s; 
+            if(!isPlayground) undoCount++;
+            if(isPlayground) drawSchematic(grid, ctxT, TW, TH); 
+        } 
+    }
+
+    function check() {
+        if(isPlayground) return; 
+        if(JSON.stringify(LEVELS[currentLvl].seq)===JSON.stringify(userSeq)){
+            let s=1; if(undoCount===0) s=3; else if(undoCount===1) s=2;
+            if(!starsData[currentLvl] || s>starsData[currentLvl]) { starsData[currentLvl]=s; localStorage.setItem('starsData',JSON.stringify(starsData)); }
+            document.getElementById('msg').innerHTML="¡CORRECTO! "+'★'.repeat(s);
+            if(currentLvl===maxLvl && maxLvl<LEVELS.length-1) { maxLvl++; localStorage.setItem('maxLvl',maxLvl); }
+            setTimeout(()=>{ if(currentLvl<LEVELS.length-1)loadLevel(currentLvl+1); else showMenu(); },1500);
+        } else document.getElementById('msg').innerHTML="INCORRECTO";
+    }
+
+    function unlockWithCode() {
+        const code = document.getElementById('level-code-input').value.trim();
+        const fb = document.getElementById('code-feedback');
+        let foundIndex = -1;
+        for(let i = 0; i < LEVELS.length; i++) {
+            if (LEVELS[i].seq.join('') === code) { foundIndex = i; break; }
+        }
+        if (foundIndex !== -1) {
+            const targetLevel = foundIndex + 1;
+            if (targetLevel < LEVELS.length) {
+                if (targetLevel > maxLvl) {
+                    maxLvl = targetLevel; localStorage.setItem('maxLvl', maxLvl);
+                    renderLevels(); fb.style.color = "green"; fb.innerText = "¡NIVEL " + (targetLevel + 1) + " DESBLOQUEADO!";
+                } else { fb.style.color = "#555"; fb.innerText = "Ya tienes desbloqueado este nivel."; }
+            } else { fb.style.color = "orange"; fb.innerText = "¡Ese es el código del último nivel!"; }
+        } else { fb.style.color = "red"; fb.innerText = "Código incorrecto."; }
+        setTimeout(() => { fb.innerText = ""; }, 2000);
+    }
+
+    function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById('screen-'+id).classList.add('active'); }
+    function showMenu(){ showScreen('menu'); } function showLevels(){ renderLevels(); showScreen('levels'); } function showHelp(){ showScreen('help'); } function continueGame(){ loadLevel(maxLvl); showScreen('game'); }
+
+    function renderLevels() {
+        let c=document.getElementById('levels-grid'); c.innerHTML='';
+        LEVELS.forEach((l,i)=>{
+            let d=document.createElement('div'); d.className='level-card';
+            let b=document.createElement('div'); b.className='level-box';
+            if(i <= maxLvl) {
+                if(starsData[i]!==undefined) {
+                    let cv=document.createElement('canvas'); cv.width=70; cv.height=70; b.appendChild(cv);
+                    let g=initGrid(70,70); l.seq.forEach(a=>action(a,g,70,70)); drawSchematic(g,cv.getContext('2d'),70,70);
+                } else b.innerHTML='<span style="font-size:30px; color:#888;">?</span>';
+                d.onclick=()=>{loadLevel(i); showScreen('game');};
+            } else { d.classList.add('locked'); b.innerHTML='<span style="font-size:20px; opacity:0.5;">🔒</span>'; }
+            d.appendChild(b);
+            let sDiv = document.createElement('div'); sDiv.className='stars';
+            if(starsData[i]) sDiv.innerText = '★'.repeat(starsData[i]);
+            d.appendChild(sDiv);
+            c.appendChild(d);
+        });
+    }
+
+    function loop() { skyOff+=0.25; if(document.getElementById('screen-game').classList.contains('active')) drawTextured(grid,ctxP,W,H); requestAnimationFrame(loop); }
+    loop();
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
