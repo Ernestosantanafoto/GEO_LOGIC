@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GEO-LOGIC: Master Combined (v99)</title>
+    <title>GEO-LOGIC: Text Fix (v100)</title>
     <style>
         /* --- ESTILOS GENERALES --- */
         :root { 
@@ -28,7 +28,7 @@
             background-repeat: repeat; 
             background-size: 300px; 
             background-position: center;
-            background-attachment: fixed; /* Mantiene el fondo estático visualmente */
+            background-attachment: fixed; 
             
             color: var(--text-color); 
             font-family: 'Segoe UI', 'Roboto', sans-serif; 
@@ -41,8 +41,8 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             
-            background: rgba(240, 244, 248, 0.5); /* Semitransparente estilo v84 */
-            backdrop-filter: blur(0px);            /* Sin blur excesivo */
+            background: rgba(240, 244, 248, 0.5); 
+            backdrop-filter: blur(0px);            
             
             transition: opacity 0.3s; opacity: 0; pointer-events: none; z-index: 0; 
         }
@@ -56,7 +56,6 @@
             background: var(--accent-color); color: white; 
             border: none; border-radius: 30px; font-size: 1.1rem; font-weight: bold; 
             text-transform: uppercase; cursor: pointer; box-shadow: var(--shadow);
-            /* Borde sutil del estilo v98 para consistencia, pero forma v84 */
             border: 2px solid rgba(255,255,255,0.3); touch-action: manipulation;
         }
         .menu-btn:active { transform: translateY(2px); }
@@ -78,7 +77,7 @@
         .level-card.locked { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
         .stars { font-size: 14px; margin-top: 5px; color: #FFD700; text-shadow: 0 1px 1px rgba(0,0,0,0.2); height: 20px; letter-spacing: 1px; }
 
-        /* INPUT CÓDIGO (Estilo limpio v98) */
+        /* INPUT CÓDIGO */
         .code-bar {
             display: flex; gap: 5px; width: 90%; max-width: 600px; margin-bottom: 10px;
             align-items: center; justify-content: center;
@@ -98,7 +97,7 @@
         #code-feedback { font-size: 0.75rem; font-weight: bold; margin-bottom: 10px; height: 15px; text-shadow: 0 1px 2px white; }
 
 
-        /* --- JUEGO (LAYOUT PRO v84) --- */
+        /* --- JUEGO --- */
         #game-layout {
             display: flex; flex-direction: column; align-items: center; 
             width: 100%; height: 100%; padding-top: 10px;
@@ -130,7 +129,6 @@
             box-shadow: var(--shadow); margin-bottom: 15px;
             display: flex; flex-direction: column; align-items: center;
         }
-        /* Escritorio: 130px (v98/v84 PC) */
         #targetCanvas { width: 100px; height: 100px; background: #99d0df; border-radius: 6px; image-rendering: pixelated; border: 2px solid white; }
         .label-target { font-size: 0.65rem; color: #888; font-weight: bold; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
 
@@ -146,20 +144,17 @@
         #simCanvas { 
             width: 340px; height: 340px; 
             background: #BFEFFF; image-rendering: pixelated; 
-            /* Estilo borde blanco limpio */
             border: 2px solid white; border-radius: 12px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             touch-action: none; 
         }
         #msg { height: 20px; font-weight: 900; margin-top: 5px; color: var(--accent-color); text-align: center; font-size: 1rem; text-shadow: 0 1px 0 white; }
 
-        /* CONTROLES (Escritorio) */
+        /* CONTROLES */
         .controls-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 95%; max-width: 500px; }
         .tool-btn { 
             aspect-ratio: 1; border-radius: 10px; 
-            /* Borde semitransparente oscuro como en tu código favorito */
             border: 2px solid rgba(39, 39, 39, 0.4); 
-            
             cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             font-size: 0.6rem; font-weight: bold; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.9);
@@ -196,7 +191,6 @@
             #level-title { font-size: 1rem; }
             .main-stage { flex-direction: column; align-items: center; gap: 2px; margin-bottom: 2px; }
             
-            /* Layout espaciado horizontalmente para el panel izquierdo (objetivo + texto) */
             .left-panel { 
                 flex-direction: row; width: auto; justify-content: space-around; 
                 align-items: center; gap: 18px; margin-bottom: 12px; 
@@ -206,22 +200,27 @@
             #targetCanvas { width: 100px; height: 100px; }
             .label-target { font-size: 0.55rem; margin-top: 1px; }
             
-            /* Info box compacta */
+            /* --- ARREGLO DE TEXTO AQUÍ --- */
             #info-box { 
-                width: 160px; height: 116px; font-size: 0.8rem; 
-                padding: 13px; line-height: 1.1; align-content: center;
-                display: flex; align-items: center; justify-content: center;
+                width: 160px; height: 116px; 
+                font-size: 0.75rem; /* Un pelín más pequeño para que quepa bien */
+                padding: 8px;       /* Menos padding */
+                line-height: 1.1; 
+                
+                /* Esto asegura que el texto se apile y centre perfectamente */
+                display: flex; 
+                flex-direction: column; /* Apilar verticalmente */
+                justify-content: center; /* Centrar verticalmente */
+                align-items: center;     /* Centrar horizontalmente */
+                text-align: center;      /* Centrar el texto en sí */
             }
             
-            /* Lienzo principal y mensaje */
             #simCanvas { width: 280px; height: 280px; }
             #msg { height: 15px; font-size: 0.8rem; margin-top: 2px; }
 
-            /* Controles: Más pequeños y con espacio */
             .controls-grid { 
-                gap: 6px; /* MÁS ESPACIO */
-                width: 90%; 
-                max-width: 280px; /* Ancho máximo reducido para forzar botones pequeños */
+                gap: 6px; width: 90%; 
+                max-width: 280px; 
             }
             .tool-btn { 
                 border-radius: 6px; 
@@ -354,7 +353,7 @@
     </div>
 
 <script>
-    try { if(!sessionStorage.getItem('v99_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v99_clean','true'); } } catch(e){}
+    try { if(!sessionStorage.getItem('v100_clean')) { localStorage.removeItem('maxLvl'); sessionStorage.setItem('v100_clean','true'); } } catch(e){}
 
     const W = 340, H = 340; 
     const TW = 130, TH = 130; 
@@ -474,7 +473,6 @@
     }
 
     function action(id, g=grid, w=W, h=H) {
-        // CORREGIDO: SE ELIMINÓ EL BLOQUEO INCONDICIONAL DE INTRUSIÓN (ID 8)
         if(g===grid) {
             if(!isPlayground) {
                 let lvl = currentLvl + 1;
@@ -541,7 +539,7 @@
         const box = document.getElementById('info-box');
         let msg = "";
         
-        if(lvl === 1) msg = "Bienvenido.<br>Deposita capas de roca sedimentaria.";
+        if(lvl === 1) msg = "¡Te doy la bienvenida!<br>Deposita capas de roca sedimentaria.";
         else if(lvl === 5) msg = "¡NUEVA HERRAMIENTA!<br><strong>Erosión:</strong> Desgasta la superficie.";
         else if(lvl === 11) msg = "¡NUEVA HERRAMIENTA!<br><strong>Pliegue:</strong> Dobla las capas por presión.";
         else if(lvl === 19) msg = "¡NUEVA HERRAMIENTA!<br><strong>Falla:</strong> Rompe y desplaza la tierra.";
@@ -604,7 +602,6 @@
         } else document.getElementById('msg').innerHTML="INCORRECTO";
     }
 
-    // --- FUNCIÓN DE CÓDIGO SECRETO ---
     function unlockWithCode() {
         const code = document.getElementById('level-code-input').value.trim();
         const fb = document.getElementById('code-feedback');
